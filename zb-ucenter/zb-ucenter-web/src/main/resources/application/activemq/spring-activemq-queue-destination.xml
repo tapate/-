@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!-- JMS点对点消息发送 的配置 -->
+    
+    <!-- =====================================================================所有消息目的地配置================================================================ -->
+
+    <!--  订单同步：点对点消息目的地 -->
+    <bean id="orderSyncQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 名称可以随意命名 -->
+        <constructor-arg value="order.sync.queue" />
+    </bean>
+    
+    
+    
+    <!--  微信关注事件，发送用户的openid微信消息：点对点消息目的地 -->
+    <bean id="wechatSubscribeQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 名称可以随意命名 -->
+        <constructor-arg value="wechat.subscribe.openid.msg.queue" />
+    </bean>
+
+
+
+
+    <!--  订单同步：微信模板消息通知目的地 -->
+    <bean id="orderSyncWechatTemplateMessageQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 名称可以随意命名 -->
+        <constructor-arg value="order.sync.wechat.template.message.queue" />
+    </bean>
+    
+    <!-- =====================================================================所有消息目的地配置================================================================ -->
+
+</beans>

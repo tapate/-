@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd 
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<!-- 缓存redis -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxActive}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	
+	<!-- <bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}" p:pool-config-ref="jedisPoolConfig" /> -->
+
+	<!-- <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean> -->
+
+
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1">
+			<list>
+				<bean name="slaver" class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.host}" />
+					<constructor-arg index="1" value="${redis.port}"
+						type="int" />
+				</bean>
+				<!-- <bean name="master" class="redis.clients.jedis.JedisShardInfo"> 
+					<constructor-arg index="0" value="${redis.master.host}"/> <constructor-arg 
+					index="1" value="${redis.master.port}" type="int"/> </bean> -->
+			</list>
+		</constructor-arg>
+	</bean>
+    
+    <!-- shiro redisManager 服务配置-->
+    <bean id="redisManager" class="org.crazycake.shiro.RedisManager">
+        <property name="host" value="${redis.host}"/>
+        <property name="port" value="${redis.port}"/>
+        <property name="expire" value="1800"/>
+        
+        <!-- 选填属性:-->
+        <!-- 
+        <property name="timeout" value="10000"/>
+         -->
+        <property name="password" value="${redis.pass}"/>
+    </bean>
+    
+    <!-- 在zb-web项目中的spring-shiro.xml配置文件中，这个对象主要作用是：之前是shiro来管理session的，现在需要将session存入redis中，目的是为了实现负载均衡控制。实现主从服务器中，若一个服务器挂了，则不会影响用户的系统继续使用操作。 -->
+    <bean id="redisSessionDAO" class="org.crazycake.shiro.RedisSessionDAO">
+        <property name="redisManager" ref="redisManager" />
+    </bean>
+     
+    <!-- 在zb-web项目中的spring-shiro.xml配置文件中，这个对象主要作用是：session管理器，注入redis的session管理器 -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="redisSessionDAO" />
+    </bean>
+    
+    <!-- 缓存管理，注入redis缓存管理器 -->
+    <bean id="cacheManager" class="org.crazycake.shiro.RedisCacheManager">
+        <property name="redisManager" ref="redisManager" />
+    </bean>
+</beans>

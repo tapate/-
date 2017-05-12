@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+
+    <!-- PUB-SUB 连接工厂 -->
+    <bean id="topicConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+        <!-- ActiveMQ默认是61616端口 -->
+        
+        <!-- <property name="brokerURL" value="tcp://127.0.0.1:61616" /> -->
+        <property name="brokerURL" value="tcp://123.57.162.75:61616" />
+        
+        <property name="useAsyncSend" value="true" />
+    </bean>
+
+    <!-- 配置消息发送目的地 -->
+    <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="MY.topic" />
+    </bean>
+
+    <!-- 消息发送模板 -->
+    <bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!-- 连接工厂 -->
+        <property name="connectionFactory">
+            <!-- 也可以使用org.springframework.jms.connection.SingleConnectionFactory -->
+            <bean class="org.springframework.jms.connection.CachingConnectionFactory">
+                <property name="targetConnectionFactory" ref="topicConnectionFactory" />
+            </bean>
+        </property>
+        
+        <!-- 默认的消息目的地 -->
+        <!-- <property name="defaultDestination" ref="topicDestination" /> -->
+
+        <!-- 发布订阅模式，默认false -->
+        <property name="pubSubDomain" value="true" />
+
+        <!-- deliveryMode, priority, timeToLive 的开关，要生效，必须配置为true，默认false -->
+        <property name="explicitQosEnabled" value="true" />
+
+        <!-- 发送模式 DeliveryMode.NON_PERSISTENT=1:非持久 ; DeliveryMode.PERSISTENT=2:持久 -->
+        <property name="deliveryMode" value="2" />
+
+        <!-- 消息转换器，首先会执行该消息转换器,之后才会去执行topicListenerA、topicListenerB所配置的消息转换器。转换器可以不一样，逻辑代码当然也可以不同。. -->
+        <!-- 如果此处没有配置转换器，则只会执行topicListenerA、topicListenerB所配置的消息转换器 -->
+        <!-- <property name="messageConverter" ref="activeMQMessageConverter" /> -->
+
+        <!-- 消息应答方式： Session.AUTO_ACKNOWLEDGE 消息自动签收 ， Session.CLIENT_ACKNOWLEDGE  客户端调用acknowledge方法手动签收 ， Session.DUPS_OK_ACKNOWLEDGE 不必必须签收，消息可能会重复发送 -->
+        <property name="sessionAcknowledgeMode" value="1" />
+    </bean>
+    
+</beans>

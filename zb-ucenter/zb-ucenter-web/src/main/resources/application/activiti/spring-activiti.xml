@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:task="http://www.springframework.org/schema/task" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd 
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+    <!-- 配置Activiti -->
+    <bean id="processEngineConfigureation" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 事务管理器 -->
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="databaseSchemaUpdate" value="true" />
+        <property name="jobExecutorActivate" value="false" />
+        <!-- 加载、部署bpmn的所在资源目录，建议不这么配置，因为项目启动后，会自动新建流程定义，建议自己上传流程定义 -->
+        <!-- <property name="deploymentResources" value="classpath:activiti/*.bpmn" /> -->
+        <property name="activityFontName" value="宋体"></property>
+        <property name="labelFontName" value="宋体"></property>
+    </bean>
+    <bean id="processEngineFactory" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfigureation" />
+    </bean>
+    
+    <!-- 初始化activiti的service -->
+    <bean id="repositoryService" factory-bean="processEngineFactory" factory-method="getRepositoryService" />
+    <bean id="runtimeService" factory-bean="processEngineFactory" factory-method="getRuntimeService" />
+    <bean id="formService" factory-bean="processEngineFactory" factory-method="getFormService" />
+    <bean id="identityService" factory-bean="processEngineFactory" factory-method="getIdentityService" />
+    <bean id="taskService" factory-bean="processEngineFactory" factory-method="getTaskService" />
+    <bean id="historyService" factory-bean="processEngineFactory" factory-method="getHistoryService" />
+    <bean id="managementService" factory-bean="processEngineFactory" factory-method="getManagementService" />
+</beans>

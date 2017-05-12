@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd 
+						http://code.alibabatech.com/schema/dubbo 
+						http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="zb-ucenter-web" />
+	<!-- zookeeper 祖册中心 -->
+	<dubbo:registry address="${zookeeper.register.center.url}" timeout="30000" />
+
+    <!-- ======================= 声明需要调用的服务接口 【开始】======================= -->
+    <!-- 
+        ·配置简要说明：
+        ·<dubbo:reference>标签中的id，要与接口的名称一致
+        ·<dubbo:reference>标签中的interface，是接口的完全包类名。无论是服务提供者还是服务调用者，标签中都会有interface属性，所以，接口包路径要一致。
+        ·   这里也说明了为什么要将接口单独抽离成一个jar模块，因为dubbo是根据接口包类名来寻找接口服务方的。并且，接口的方法参数、参数类型都要一致。
+     -->
+    
+    <!-- 这一个服务是用作调试使用，在项目中未使用到 -->
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.HelloWordService" id="helloWordService" timeout="30000" retries="0" />
+	
+	<!-- 全局配置服务 -->
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.basic.BasicConfigService" id="basicConfigService" timeout="30000" retries="0" />
+	
+	<!-- 基础服务：User、Role、Permission、UserRole、RolePermission -->
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.user.UserService" id="userService" timeout="30000" retries="0" />
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.sys.MenuService" id="menuService" timeout="30000" retries="0" />
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.sys.RoleService" id="roleService" timeout="30000" retries="0" />
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.sys.UserRoleService" id="userRoleService" timeout="30000" retries="0" />
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.sys.PermissionService" id="permissionService" timeout="30000" retries="0" />
+	<dubbo:reference interface="pers.zb.ucenter.rpc.api.sys.RolePermissionService" id="rolePermissionService" timeout="30000" retries="0" />
+	
+	<!-- 微信相关服务 -->
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.wechat.TemplateMessageService" id="templateMessageService" timeout="30000" retries="0" />
+    
+    <!-- 订单相关服务 -->
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.order.OrderInfoService" id="orderService" timeout="30000" retries="0" />
+    
+    <!-- 资源下载相关服务 -->
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.basic.BasicSourceDownloadService" id="basicSourceDownloadService" timeout="30000" retries="0" />
+    
+    <!-- activemq消息相关服务 -->
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.activemq.QueueMessageService" id="queueMessageService" timeout="30000" retries="0" />
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.activemq.TopicMessageService" id="topicMessageService" timeout="30000" retries="0" />
+    
+    <!-- activiti工作流相关服务 -->
+	<dubbo:reference interface="org.activiti.engine.RepositoryService" id="repositoryService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="org.activiti.engine.RuntimeService" id="runtimeService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="org.activiti.engine.TaskService" id="taskService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="org.activiti.engine.HistoryService" id="historyService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="org.activiti.engine.ManagementService" id="managementService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="org.activiti.engine.IdentityService" id="identityService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="org.activiti.engine.FormService" id="formService" timeout="30000" retries="0"/>
+    
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.activiti.ProcessListService" id="processListService" timeout="30000" retries="0"/>
+    <dubbo:reference interface="pers.zb.ucenter.rpc.api.activiti.LeaveApplyService" id="leaveApplyService" timeout="30000" retries="0"/>
+	
+    
+	<!-- ======================= 声明需要调用的服务接口 【结束】======================= -->
+</beans>

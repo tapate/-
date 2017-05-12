@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!-- JMS点对点消息发送 的配置 -->
+    
+    <!-- PTP连接工厂 -->
+    <bean id="queueConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+        <!-- ActiveMQ默认是61616端口 -->
+        
+        <!-- <property name="brokerURL" value="tcp://127.0.0.1:61616" /> -->
+        <property name="brokerURL" value="tcp://123.57.162.75:61616" />
+        
+        <!-- <property name="brokerURL" value="vm://normandy.notify" /> -->
+        <property name="useAsyncSend" value="true" />
+    </bean>
+
+    
+    
+    <!-- =====================================================================spring消息模板配置:根据不同业务需求，配置不同的模板================================================================ -->
+    <!-- PTP jms基础模板 ：未使用消息转换器-->
+    <bean id="baseQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory">
+            <!-- 也可以使用org.springframework.jms.connection.SingleConnectionFactory -->
+            <bean class="org.springframework.jms.connection.CachingConnectionFactory">
+                <property name="targetConnectionFactory" ref="queueConnectionFactory" />
+            </bean>
+        </property>
+        <!-- <property name="defaultDestination" ref="orderSyncQueueDestination" /> -->
+        <!-- 是否是发布订阅模式 -->
+        <property name="pubSubDomain" value="false" />
+        <property name="receiveTimeout" value="600"></property>
+        
+        <!-- 消息应答方式： Session.AUTO_ACKNOWLEDGE 消息自动签收 ， Session.CLIENT_ACKNOWLEDGE  客户端调用acknowledge方法手动签收 ， Session.DUPS_OK_ACKNOWLEDGE 不必必须签收，消息可能会重复发送 -->
+        <property name="sessionAcknowledgeMode" value="1" />
+    </bean>
+
+    
+    <!-- PTP jms基础模板 ：使用消息转换器-->
+    <bean id="baseMessageConverterQueueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory">
+            <!-- 也可以使用org.springframework.jms.connection.SingleConnectionFactory -->
+            <bean class="org.springframework.jms.connection.CachingConnectionFactory">
+                <property name="targetConnectionFactory" ref="queueConnectionFactory" />
+            </bean>
+        </property>
+        <!-- <property name="defaultDestination" ref="orderSyncQueueDestination" /> -->
+        <!-- 是否是发布订阅模式 -->
+        <property name="pubSubDomain" value="false" />
+        <property name="receiveTimeout" value="600"></property>
+        
+        <property name="messageConverter" ref="activeMQMessageConverter" />
+        
+        <!-- 消息应答方式： Session.AUTO_ACKNOWLEDGE 消息自动签收 ， Session.CLIENT_ACKNOWLEDGE  客户端调用acknowledge方法手动签收 ， Session.DUPS_OK_ACKNOWLEDGE 不必必须签收，消息可能会重复发送 -->
+        <property name="sessionAcknowledgeMode" value="1" />
+    </bean>
+    
+    <!-- =====================================================================spring消息模板配置================================================================ -->
+    
+    
+    <!-- 消息转换器 -->
+    <bean id="activeMQMessageConverter" class="pers.zb.ucenter.web.activemq.ActiveMQMessageConverter" />
+    
+    
+    
+    <!-- 消息发送方 -->
+    <!-- <bean id="messageSender" class="pers.zb.web.activemq.MessageSender"></bean> -->
+    
+</beans>

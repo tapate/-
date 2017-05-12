@@ -1,0 +1,379 @@
+package pers.zb.ucenter.rpc.service.activiti;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pers.zb.common.util.AjaxResult;
+import pers.zb.common.util.Pager;
+import pers.zb.common.util.util.DateUtil;
+import pers.zb.entity.activiti.LeaveApply;
+import pers.zb.entity.activiti.qo.LeaveApplyQo;
+import pers.zb.entity.activiti.vo.DeptLeaderAuditVo;
+import pers.zb.entity.activiti.vo.LeaveApplyHistoryVo;
+import pers.zb.entity.activiti.vo.LeaveApplyVo;
+import pers.zb.entity.sys.SysUser;
+import pers.zb.ucenter.dao.activiti.LeaveApplyMapper;
+import pers.zb.ucenter.dao.sys.UserMapper;
+import pers.zb.ucenter.rpc.api.activiti.LeaveApplyService;
+
+@Service("leaveApplyServiceImpl")
+public class LeaveApplyServiceImpl implements LeaveApplyService {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private IdentityService identityService;
+    
+    @Autowired
+    private RuntimeService runtimeService;
+    
+    @Autowired
+    private TaskService taskService;
+    
+    @Autowired
+    private HistoryService historyService;
+    
+    @Autowired
+    private LeaveApplyMapper leaveApplyMapper;
+    
+    @Autowired
+    private UserMapper userMapper;
+    
+    @Transactional
+    @Override
+    public String startWorkflow(LeaveApplyQo qo, SysUser user) throws Exception{
+        //保存请假申请
+        LeaveApply leaveApply = new LeaveApply();
+        leaveApply.setCreateTime(new Date());
+        leaveApply.setUpdateTime(new Date());
+        leaveApply.setStartDate(DateUtil.formatDate(qo.getStartDate(), DateUtil.DATE_DEFAULT_FORMAT));
+        leaveApply.setEndDate(DateUtil.formatDate(qo.getEndDate(), DateUtil.DATE_DEFAULT_FORMAT));
+        leaveApply.setUserId(user.getId());
+        leaveApply.setType(qo.getType());
+        leaveApply.setReason(qo.getReason());
+        leaveApplyMapper.insert(leaveApply);
+        
+        //设置流程所需变量
+        Map<String,Object> variables = new HashMap<String, Object>();
+        logger.debug("OA请假申请，流程变量设置，applyuserid：" + user.getId());
+        variables.put("applyuserid", user.getId());
+        
+        //使用leaveapply表的主键作为businesskey,连接业务数据和流程数据
+        String businesskey = String.valueOf(leaveApply.getId());
+        logger.debug("OA请假申请，业务key(实体id)，businesskey：" + businesskey);
+        
+        identityService.setAuthenticatedUserId(String.valueOf(user.getId()));
+        
+        //启动流程
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("leave",businesskey,variables);
+        
+        //将实例id赋予请假对应的字段
+        leaveApply.setProcessInstanceId(instance.getId());
+        leaveApplyMapper.updateByPrimaryKey(leaveApply);
+        
+        return instance.getId();
+    }
+
+    @Override
+    public Pager<LeaveApplyVo> getMyLeaveApplyList(Pager<LeaveApplyVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionKey("leave").involvedUser(String.valueOf(leaveApplyQo.getUserId()));
+        
+        int total = query.list().size();
+        List<ProcessInstance> processInstanceList = query.listPage(pager.getOffset(), pager.getLimit());
+        
+        List<LeaveApplyVo> list = null;
+        for (ProcessInstance processInstance : processInstanceList) {
+            // 初始化集合大小
+            if (list == null) {
+                list = new ArrayList<LeaveApplyVo>();
+            }
+            
+            //根据业务key获取请假申请记录。在该流程中，业务key其实就是请假申请记录的id
+            LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(processInstance.getBusinessKey()));
+            
+            //将请假记录中的申请人id与当前登录的人id进行对比，判断是否属于自己的请假申请
+            if(leaveApply.getUserId().longValue() == leaveApplyQo.getUserId().longValue()){
+                LeaveApplyVo vo = new LeaveApplyVo();
+                vo.setActivityId(processInstance.getActivityId());
+                vo.setBusinessKey(processInstance.getBusinessKey());
+                vo.setExecutionId(processInstance.getId());
+                vo.setProcessInstanceId(processInstance.getProcessInstanceId());
+                list.add(vo);
+            }
+        }
+        pager.setTotal(Long.parseLong(String.valueOf(total)));
+        pager.setRows(list);
+        return pager;
+    }
+
+    @Override
+    public List<String> getHighLightedFlows(ProcessDefinitionEntity processDefinitionEntity, List<HistoricActivityInstance> historicActivityInstances) throws Exception {
+        List<String> highFlows = new ArrayList<String>();// 用以保存高亮的线flowId
+
+        for (int i = 0; i < historicActivityInstances.size(); i++) {// 对历史流程节点进行遍历
+            ActivityImpl activityImpl = processDefinitionEntity.findActivity(historicActivityInstances.get(i).getActivityId());// 得 到节点定义的详细信息
+            List<ActivityImpl> sameStartTimeNodes = new ArrayList<ActivityImpl>();// 用以保存后需开始时间相同的节点
+            if ((i + 1) >= historicActivityInstances.size()) {
+                break;
+            }
+            ActivityImpl sameActivityImpl1 = processDefinitionEntity.findActivity(historicActivityInstances.get(i + 1).getActivityId());// 将后面第一个节点放在时间相同节点的集合里
+            sameStartTimeNodes.add(sameActivityImpl1);
+            for (int j = i + 1; j < historicActivityInstances.size() - 1; j++) {
+                HistoricActivityInstance activityImpl1 = historicActivityInstances.get(j);// 后续第一个节点
+                HistoricActivityInstance activityImpl2 = historicActivityInstances.get(j + 1);// 后续第二个节点
+                if (activityImpl1.getStartTime().equals(activityImpl2.getStartTime())) {// 如果第一个节点和第二个节点开始时间相同保存
+                    ActivityImpl sameActivityImpl2 = processDefinitionEntity.findActivity(activityImpl2.getActivityId());
+                    sameStartTimeNodes.add(sameActivityImpl2);
+                } else {// 有不相同跳出循环
+                    break;
+                }
+            }
+            List<PvmTransition> pvmTransitions = activityImpl.getOutgoingTransitions();// 取出节点的所有出去的线
+            for (PvmTransition pvmTransition : pvmTransitions) {// 对所有的线进行遍历
+                ActivityImpl pvmActivityImpl = (ActivityImpl) pvmTransition.getDestination();// 如果取出的线的目标节点存在时间相同的节点里，保存该线的id，进行高亮显示
+                if (sameStartTimeNodes.contains(pvmActivityImpl)) {
+                    highFlows.add(pvmTransition.getId());
+                }
+            }
+        }
+        return highFlows;
+    }
+
+    @Override
+    public Pager<DeptLeaderAuditVo> getDeptLeaderAuditList(Pager<DeptLeaderAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+        TaskQuery query = taskService.createTaskQuery().taskCandidateGroup("部门经理");//查询项目经理的任务
+        List<Task> deptTasks = query.list();//获取部门经理需要审批的所有请假申请列表
+        int total = deptTasks.size();//总记录数
+        
+        List<Task> deptPagerTasks = query.listPage(pager.getOffset(), pager.getLimit());//分页数据
+        
+        List<DeptLeaderAuditVo> list = null;
+        for(Task task : deptPagerTasks){
+            if (list == null) {// 初始化集合大小
+                list = new ArrayList<DeptLeaderAuditVo>();
+            }
+            
+            /** 获取请假相关数据 */
+            String processInstanceId = task.getProcessInstanceId();//流程实例ID
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+            String businessKey = processInstance.getBusinessKey();//业务key，对应的请假记录ID
+            LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(businessKey));//根据ID获取请假记录
+            
+            SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
+            
+            DeptLeaderAuditVo vo = new DeptLeaderAuditVo();
+            vo.setCreateTime(leaveApply.getCreateTime());
+            vo.setStartDate(leaveApply.getStartDate());
+            vo.setEndDate(leaveApply.getEndDate());
+            vo.setProcessInstanceId(processInstanceId);
+            vo.setType(leaveApply.getType());
+            vo.setUserId(leaveApply.getUserId());
+            vo.setUserName(user.getRealName());
+            vo.setReason(leaveApply.getReason());
+            vo.setTaskId(task.getId());
+            vo.setTaskName(task.getName());
+            list.add(vo);
+        }
+        pager.setTotal(Long.parseLong(String.valueOf(total)));
+        pager.setRows(list);
+        return pager;
+    }
+
+    @Override
+    public DeptLeaderAuditVo getDeptleaderAuditByTaskId(String taskId) throws Exception {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        ProcessInstance process = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+        
+        LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(process.getBusinessKey()));
+        SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
+        
+        DeptLeaderAuditVo vo = new DeptLeaderAuditVo();
+        vo.setCreateTime(leaveApply.getCreateTime());
+        vo.setStartDate(leaveApply.getStartDate());
+        vo.setEndDate(leaveApply.getEndDate());
+        vo.setType(leaveApply.getType());
+        vo.setUserId(leaveApply.getUserId());
+        vo.setUserName(user.getRealName());
+        vo.setReason(leaveApply.getReason());
+        
+        return vo;
+    }
+
+    @Transactional
+    @Override
+    public AjaxResult<String> deptleaderAuditComplete(String taskId, String approvalResult, Long userId) throws Exception {
+        AjaxResult<String> result = new AjaxResult<String>();
+        if(StringUtils.isBlank(taskId)){
+            result.setCode(10001);
+            result.setMsg("任务ID不能为空");
+            return result;
+        }
+        if(userId == null || "".equals(userId.toString())){
+            result.setCode(10002);
+            result.setMsg("处理人ID不能为空");
+            return result;
+        }
+        try {
+            Map<String,Object> variables=new HashMap<String,Object>();
+            variables.put("deptleaderapprove", approvalResult);//设置流程所需参数，用于流程跳转
+            
+            taskService.claim(taskId, String.valueOf(userId));//设置任务处理人
+            taskService.complete(taskId, variables);//流程执行
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(500);
+            result.setMsg("处理失败，请稍候重试");
+            return result;
+        }
+        return result;
+    }
+
+    @Override
+    public Pager<DeptLeaderAuditVo> getLeaveApplyTurndownList(Pager<DeptLeaderAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+        //获取被驳回的需要重新调整的请假申请任务列表
+        TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned(String.valueOf(leaveApplyQo.getUserId())).taskName("调整申请");
+
+        List<Task> tasks = query.list();//所有任务
+        List<Task> pagerTasks = query.listPage(pager.getOffset(), pager.getLimit());//分页
+        
+        List<DeptLeaderAuditVo> list = null;
+        for(Task task : pagerTasks){
+            if(list == null){//初始化集合
+                list = new ArrayList<DeptLeaderAuditVo>();
+            }
+            String processInstanceId = task.getProcessInstanceId();//流程实例ID
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();//获取流程实例
+            
+            String businessKey = processInstance.getBusinessKey();//业务key，实际也就是请假申请记录的ID
+            LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(businessKey));//获取请假申请记录
+            
+            SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
+            
+            DeptLeaderAuditVo vo = new DeptLeaderAuditVo();
+            vo.setCreateTime(leaveApply.getCreateTime());
+            vo.setStartDate(leaveApply.getStartDate());
+            vo.setEndDate(leaveApply.getEndDate());
+            vo.setProcessInstanceId(processInstanceId);
+            vo.setType(leaveApply.getType());
+            vo.setUserId(leaveApply.getUserId());
+            vo.setUserName(user.getRealName());
+            vo.setReason(leaveApply.getReason());
+            vo.setTaskId(task.getId());
+            vo.setTaskName(task.getName());
+            list.add(vo);
+        }
+        
+        pager.setTotal(Long.parseLong(String.valueOf(tasks.size())));
+        pager.setRows(list);
+        return pager;
+    }
+
+    @Override
+    public AjaxResult<String> leaveapplyTurndownModify(String taskId, String reapply) throws Exception {
+        AjaxResult<String> result = new AjaxResult<String>();
+        
+        if(StringUtils.isBlank(taskId)){
+            result.setCode(10001);
+            result.setMsg("任务ID不能为空");
+            return result;
+        }
+        if(StringUtils.isBlank(reapply)){
+            result.setCode(10002);
+            result.setMsg("请确认是否继续申请");
+            return result;
+        }
+        
+        /** ==============这里可以对请假记录做相关操作，比如记录日期、更新状态等 ================= */
+        /*
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();//获取当前任务
+        String processInstanceId = task.getProcessInstanceId();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        String businesskey = processInstance.getBusinessKey();//获取业务key，实际上就是请假记录的ID
+        LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(businesskey));//获取请假记录
+        */
+        
+        try {
+            Map<String,Object> variables=new HashMap<String,Object>();
+            variables.put("reapply", reapply);//设置流程变量
+            taskService.complete(taskId, variables);//执行任务
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(500);
+            result.setMsg("提交失败，请稍候重试");
+            return result;
+        }
+        return result;
+    }
+
+    @Override
+    public Pager<LeaveApplyHistoryVo> getLeaveApplyHistoryList(Pager<LeaveApplyHistoryVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+        //获取请假历史列表
+        HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("leave").startedBy(String.valueOf(leaveApplyQo.getUserId())).finished();
+        int total = Integer.parseInt(String.valueOf(query.count()));//总记录数
+        
+        List<HistoricProcessInstance> historicProcessInstanceList = query.listPage(pager.getOffset(), pager.getLimit());
+        
+        List<LeaveApplyHistoryVo> list = null;
+        for (HistoricProcessInstance historicProcessInstance : historicProcessInstanceList) {
+            // 初始化集合大小
+            if (list == null) {
+                list = new ArrayList<LeaveApplyHistoryVo>();
+            }
+            //根据业务key获取请假申请记录。在该流程中，业务key其实就是请假申请记录的id
+            LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(historicProcessInstance.getBusinessKey()));
+            SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
+            
+            LeaveApplyHistoryVo vo = new LeaveApplyHistoryVo();
+            vo.setBusinessKey(historicProcessInstance.getBusinessKey());
+            vo.setCreateTime(leaveApply.getCreateTime());
+            vo.setProcessInstanceId(historicProcessInstance.getId());
+            vo.setUserName(user.getRealName());
+            vo.setTypeName(leaveApply.getType().getDescription());
+            list.add(vo);
+        }
+        
+        pager.setTotal(Long.parseLong(String.valueOf(total)));
+        pager.setRows(list);
+        return pager;
+    }
+
+    @Override
+    public AjaxResult<List<HistoricActivityInstance>> leaveApplyHandleRecord(String processInstanceId) throws Exception {
+        AjaxResult<List<HistoricActivityInstance>> result = new AjaxResult<List<HistoricActivityInstance>>();
+        if(StringUtils.isBlank(processInstanceId)){
+            result.setCode(10001);
+            result.setMsg("流程实例ID不能为空");
+            return result;
+        }
+        
+        //获取处理记录
+        List<HistoricActivityInstance> list = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).orderByHistoricActivityInstanceStartTime().asc().list();
+        result.setResult(list);
+        return result;
+    }
+
+}
