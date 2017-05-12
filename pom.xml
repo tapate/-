@@ -618,7 +618,7 @@
             <version>1.2.3</version>
         </dependency>
         
-        
+        <!-- 百度开源的分布式配置管理框架 -->
         <dependency>
             <groupId>com.baidu.disconf</groupId>
             <artifactId>disconf-client</artifactId>
