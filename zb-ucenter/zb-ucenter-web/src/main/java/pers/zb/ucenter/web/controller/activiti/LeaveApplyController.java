@@ -37,6 +37,7 @@ import pers.zb.common.util.util.DateUtil;
 import pers.zb.common.util.util.JsonUtil;
 import pers.zb.entity.activiti.qo.LeaveApplyQo;
 import pers.zb.entity.activiti.vo.DeptLeaderAuditVo;
+import pers.zb.entity.activiti.vo.HrAuditVo;
 import pers.zb.entity.activiti.vo.LeaveApplyHistoryVo;
 import pers.zb.entity.activiti.vo.LeaveApplyVo;
 import pers.zb.entity.sys.SysUser;
@@ -47,14 +48,18 @@ import pers.zb.ucenter.rpc.api.user.UserService;
 /** =============================== 【该类方法索引，方便定向具体方法体】 =========================================== */
 /**
    01、进入请假申请页面   toOaApplyView
+   
    02、保存请假申请记录   saveOaApply
    03、进入我发起的请假流程页面   toMyLeaveApplyView
    04、获取自己发起的请假流程列表  myLeaveApplyList
+   
    05、跟踪查看请假申请流程进度   traceprocess
-   06、进入审批请假申请页面    toDeptleaderAuditView
-   07、获取部门领导需要审批的请假流程列表    getDeptLeaderAuditList
-   08、进入请假审批处理页面    toDeptleaderAuditHandleView
+   
+   06、进入请假列表审批页面(部门经理)    toDeptleaderAuditView
+   07、获取部门领导需要审批的请假列表    getDeptLeaderAuditList
+   08、进入请假审批处理页面(部门经理)    toDeptleaderAuditHandleView
    09、部门经理审批请假申请    deptleaderAuditComplete
+   
    10、进入被驳回的请假申请列表页面    toMyLeaveApplyTurndownView
    11、获取被驳回需要重新调整的请假申请列表    leaveApplyTurndownList
    12、进入请假申请调整页面    toLeaveApplyModifyView
@@ -62,6 +67,11 @@ import pers.zb.ucenter.rpc.api.user.UserService;
    14、进入 我的请假申请历史 页面    toMyLeaveApplyHistoryView
    15、获取我的请假历史列表    leaveApplyHistoryList
    16、获取请假申请处理记录    leaveApplyHandleRecord
+   
+   17、进入请假列表审批页面(人事)    toHrAuditView
+   18、获取人事需要审批的请假列表    getHrAuditList
+   19、进入请假审批处理页面(人事)    toHrAuditHandleView
+   20、人事审批请假申请    hrAuditComplete
  * */
 /** =============================== 【该类方法索引，方便定向具体方法体】 =========================================== */
 
@@ -238,7 +248,7 @@ public class LeaveApplyController {
     
     /**
      * 
-     * @description 进入审批请假申请页面
+     * @description 进入部门经理审批请假申请页面
      * 
      * @author zhoubang 
      * @date 2017年4月1日 上午9:56:32 
@@ -336,6 +346,106 @@ public class LeaveApplyController {
         return result;
     }
 
+    
+    /**
+     * 
+     * @description 进入人事审批请假申请页面
+     * 
+     * @author zhoubang 
+     * @date 2017年5月19日 下午2:58:12 
+     * 
+     * @param map
+     * @return
+     */
+    @RequestMapping("/toHrAuditView")
+    public String toHrAuditView(ModelMap map) {
+        return "/activiti/oa/hr_audit";
+    }
+    
+    
+    /**
+     * 
+     * @description 获取人事需要审批的请假列表
+     * 
+     * @author zhoubang 
+     * @date 2017年4月1日 上午10:04:58 
+     * 
+     * @param pager
+     * @param leaveApplyQo
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping("/hr/auditlist")
+    @ResponseBody
+    public Object getHrAuditList(Pager<HrAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+        // 获取当前登录用户
+        Subject currentUser = SecurityUtils.getSubject();// 登录对象
+        SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
+        
+        leaveApplyQo.setUserId(user.getId());
+        logger.debug("获取人事需要审批的请假流程列表，leaveApplyQo:" + JsonUtil.toJson(leaveApplyQo));
+        
+        pager = leaveApplyService.getHrAuditList(pager, leaveApplyQo);
+        return pager;
+    }
+    
+    
+    /**
+     * 
+     * @description 进入人事请假审批处理页面
+     * 
+     * @author zhoubang 
+     * @date 2017年4月1日 下午1:06:05 
+     * 
+     * @param request
+     * @param response
+     * @param taskId
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/hr/audit/view")
+    public String toHrAuditHandleView(String taskId, ModelMap map) throws Exception {
+        HrAuditVo vo = leaveApplyService.getHrAuditByTaskId(taskId);
+        map.put("applyDetail", vo);//请假详情
+        map.put("createTime", DateUtil.getDateFormat(vo.getCreateTime(), DateUtil.DATE_DEFAULT_FORMAT));//申请日期
+        map.put("startDate", DateUtil.getDateFormat(vo.getStartDate(), DateUtil.DATE_DEFAULT_FORMAT));//开始日期
+        map.put("endDate", DateUtil.getDateFormat(vo.getEndDate(), DateUtil.DATE_DEFAULT_FORMAT));//结束日期
+        map.put("applyDetail", vo);//请假详情
+        map.put("taskId", taskId);//任务ID
+        map.put("approvalOpinion", ApprovalOpinion.values());//审批意见枚举
+        return "/activiti/oa/hr_audit_detail";
+    }
+    
+    
+    /**
+     * 
+     * @description 人事审批请假申请
+     * 
+     * @author zhoubang 
+     * @date 2017年4月1日 下午1:12:12 
+     * 
+     * @param taskId
+     * @param approval
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value="/hr/audit/handle")
+    @ResponseBody
+    public AjaxResult<String> hrAuditComplete(@RequestParam(value="taskId",required=true) String taskId, ApprovalOpinion hrApproveResult) throws Exception{
+        String approveResult = "true";//默认审批通过
+        if(hrApproveResult == ApprovalOpinion.REJECT){
+            approveResult = "false";
+        }
+        // 获取当前登录用户
+        Subject currentUser = SecurityUtils.getSubject();// 登录对象
+        SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
+        
+        //审批流程执行
+        AjaxResult<String> result = leaveApplyService.hrAuditComplete(taskId, approveResult, user.getId());
+        return result;
+    }
+    
     
     /**
      * 

@@ -10,6 +10,7 @@ import pers.zb.common.util.AjaxResult;
 import pers.zb.common.util.Pager;
 import pers.zb.entity.activiti.qo.LeaveApplyQo;
 import pers.zb.entity.activiti.vo.DeptLeaderAuditVo;
+import pers.zb.entity.activiti.vo.HrAuditVo;
 import pers.zb.entity.activiti.vo.LeaveApplyHistoryVo;
 import pers.zb.entity.activiti.vo.LeaveApplyVo;
 import pers.zb.entity.sys.SysUser;
@@ -159,4 +160,46 @@ public interface LeaveApplyService {
      * @throws Exception
      */
     public AjaxResult<List<HistoricActivityInstance>> leaveApplyHandleRecord(String processInstanceId) throws Exception;
+
+    /**
+     * 
+     * @description 获取人事需要审批的请假列表
+     * 
+     * @author zhoubang 
+     * @date 2017年5月19日 下午3:07:16 
+     * 
+     * @param pager
+     * @param leaveApplyQo
+     * @return
+     * @throws Exception
+     */
+    public Pager<HrAuditVo> getHrAuditList(Pager<HrAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception;
+
+    /**
+     * 
+     * @description 根据任务ID获取详情
+     * 
+     * @author zhoubang 
+     * @date 2017年5月19日 下午3:28:43 
+     * 
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
+    public HrAuditVo getHrAuditByTaskId(String taskId) throws Exception;
+
+    /**
+     * 
+     * @description 人事审批请假申请
+     * 
+     * @author zhoubang 
+     * @date 2017年5月19日 下午3:31:12 
+     * 
+     * @param taskId
+     * @param approveResult
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public AjaxResult<String> hrAuditComplete(String taskId, String approveResult, Long userId) throws Exception;
 }

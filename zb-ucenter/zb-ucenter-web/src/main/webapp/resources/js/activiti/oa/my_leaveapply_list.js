@@ -27,7 +27,7 @@ $(function() {
 			title : '流程实例ID',
 			align : 'center',
 		},{
-			field : 'activityId',
+			field : 'name',
 			title : '当前节点',
 			align : 'center'
 		},

@@ -36,5 +36,10 @@
             <artifactId>zb-conf</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>pers.zb.ucenter.rpc.service</groupId>
+            <artifactId>zb-ucenter-rpc-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>
