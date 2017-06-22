@@ -77,7 +77,7 @@ public class WXRequestAuthService {
             e1.printStackTrace();
         }
         String encrypt_type = request.getParameter("encrypt_type");
-        if (StringUtils.isEmpty(encrypt_type) || encrypt_type.equals("raw")) {
+        if (org.apache.commons.lang3.StringUtils.isEmpty(encrypt_type) || encrypt_type.equals("raw")) {
             xml = AuthProcess.decryptMsg(request, xml);
         }
         // XML格式的消息数据
@@ -437,7 +437,7 @@ public class WXRequestAuthService {
                     respXml = ResponseMessageUtil
                             .parseKfMessageResponseToXml((KfMessageResponse) baseMessageResponse);
                 }
-                if (StringUtils.isEmpty(encrypt_type)
+                if (org.apache.commons.lang3.StringUtils.isEmpty(encrypt_type)
                         || encrypt_type.equals("raw")) {
                     respXml = AuthProcess.encryptMsg(request, respXml);
                 }

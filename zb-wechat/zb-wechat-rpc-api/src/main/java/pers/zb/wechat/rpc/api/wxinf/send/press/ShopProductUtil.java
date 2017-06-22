@@ -205,7 +205,7 @@ public class ShopProductUtil {
      */
     @SuppressWarnings({ "unchecked", "deprecation" })
 	public static CateList getCateInfoList(String id, Token token) throws Exception {
-    	if (StringUtils.isEmpty(id)) {
+    	if (org.apache.commons.lang3.StringUtils.isEmpty(id)) {
     		id = "1";
     	}
     	CateList cateList = null;
@@ -229,7 +229,7 @@ public class ShopProductUtil {
      * @throws Exception
      */
 	public static SkuList getCateSkuListUrl(String id, Token token) throws Exception {
-    	if (StringUtils.isEmpty(id)) {
+    	if (org.apache.commons.lang3.StringUtils.isEmpty(id)) {
     		id = "1";
     	}
     	SkuList skuList = null;
@@ -269,7 +269,7 @@ public class ShopProductUtil {
      * @throws Exception
      */
 	public static PropertyList getCatePropertyListUrl(String id, Token token) throws Exception {
-    	if (StringUtils.isEmpty(id)) {
+    	if (org.apache.commons.lang3.StringUtils.isEmpty(id)) {
     		id = "1";
     	}
     	PropertyList propertyList = null;

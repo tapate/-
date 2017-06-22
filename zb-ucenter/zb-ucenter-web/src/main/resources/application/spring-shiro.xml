@@ -110,6 +110,8 @@
 				/orderSync/* = anon
 				/wx = anon
 				
+				/webservice/** = anon
+				
 				/socket/** = anon
 				/websck = anon
 				/sockjs/websck = anon
