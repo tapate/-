@@ -19,10 +19,6 @@
                         http://www.springframework.org/schema/mvc  
                         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
     <!-- 如果配置了<mvc:annotation-driven />，则RequestMappingHandlerMapping这个bean中配置的自定义拦截器不会生效。 需要使用<mvc:interceptors>配置拦截器才可以。-->
-    <!-- <mvc:annotation-driven /> -->
-
-    <!-- spring静态资源处理 -->
-    <!-- <mvc:resources location="/resources/" mapping="/resources/**"/> -->
 
     <!-- 处理responseBody 里面日期类型 -->  
     <mvc:annotation-driven>
@@ -41,9 +37,6 @@
         </mvc:message-converters>  
     </mvc:annotation-driven>
 	 
-	 
-    <!-- 这个配置用于junit测试.正式访问项目的时候，可以注释掉,因为springmvc已经配置好 -->
-    <!-- 加上这句配置，自动扫描，则测试的时候才输出aop日志信息， -->
 	<context:component-scan base-package="pers.zb.*"/>
     
 	<!-- 

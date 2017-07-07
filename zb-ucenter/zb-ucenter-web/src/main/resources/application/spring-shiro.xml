@@ -109,7 +109,9 @@
 				/index/page = anon
 				/orderSync/* = anon
 				/wx = anon
-				
+				/swagger/** = anon
+				/api-docs = anon
+				/swagger-ui.html = anon
 				/webservice/** = anon
 				
 				/socket/** = anon

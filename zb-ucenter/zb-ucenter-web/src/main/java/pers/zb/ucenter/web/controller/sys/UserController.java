@@ -13,9 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import pers.zb.common.util.AjaxResult;
 import pers.zb.common.util.Pager;
 import pers.zb.common.util.enums.UserStatus;
@@ -27,6 +30,7 @@ import pers.zb.entity.sys.vo.UserVo;
 import pers.zb.entity.vo.ZtreeVo;
 import pers.zb.ucenter.rpc.api.sys.RoleService;
 import pers.zb.ucenter.rpc.api.user.UserService;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * 
@@ -38,6 +42,7 @@ import pers.zb.ucenter.rpc.api.user.UserService;
  */
 @Controller
 @RequestMapping("/user")
+@Api(value="/user",tags="用户API接口")
 public class UserController {
     
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -58,6 +63,7 @@ public class UserController {
      * @param response
      */
     @RequestMapping("/toUserListView")
+    @ApiIgnore
     public String toUserListView(HttpServletRequest request, HttpServletResponse response,ModelMap map) {
         
         // 账户状态
@@ -73,7 +79,8 @@ public class UserController {
     
     @RequestMapping("/list")
     @ResponseBody
-    public Object list(Pager<UserVo> pager, UserQo userQo) {
+    @ApiOperation(value = "获取分页用户列表", httpMethod = "POST", response = AjaxResult.class, notes = "获取分页用户列表")
+    public Object list(@ModelAttribute Pager<UserVo> pager, @ModelAttribute UserQo userQo) {
         pager = userService.getList(pager, userQo);
         return pager;
     }
@@ -90,7 +97,8 @@ public class UserController {
      */
     @RequestMapping("/editTableColumn")
     @ResponseBody
-    public AjaxResult<String> editTableColumn(UserQo qo) {
+    @ApiOperation(value = "bootstrap table 列编辑保存", httpMethod = "POST", response = AjaxResult.class, notes = "bootstrap table 列编辑保存")
+    public AjaxResult<String> editTableColumn(@ModelAttribute UserQo qo) {
         logger.debug("bootstrap table 列编辑保存，qo参数：userId:" + qo.getUserId()  + "，realName：" + qo.getRealName());
         
         AjaxResult<String> result = new AjaxResult<String>();
@@ -135,7 +143,8 @@ public class UserController {
      */
     @RequestMapping("/deleteUser")
     @ResponseBody
-    public AjaxResult<String> deleteUser(UserQo qo) {
+    @ApiOperation(value = "删除用户", httpMethod = "POST", response = AjaxResult.class, notes = "删除用户")
+    public AjaxResult<String> deleteUser(@ModelAttribute UserQo qo) {
         logger.debug("删除用户，qo参数：userQo:" + JsonUtil.toJson(qo));
         
         AjaxResult<String> result = new AjaxResult<String>();
@@ -176,6 +185,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/toEditView")
+    @ApiIgnore
     public String toEditView(ModelMap map,UserQo qo) {
         if(qo.getUserId() != null){
             SysUser user = userService.get(qo.getUserId());
@@ -270,7 +280,8 @@ public class UserController {
      */
     @RequestMapping("/updateUser")
     @ResponseBody
-    public AjaxResult<String> updateUser(UserQo qo) {
+    @ApiOperation(value = "更新用户信息", httpMethod = "POST", response = AjaxResult.class, notes = "更新用户信息")
+    public AjaxResult<String> updateUser(@ModelAttribute UserQo qo) {
         logger.debug("更新用户，qo参数：userQo:" + JsonUtil.toJson(qo));
         
         AjaxResult<String> result = new AjaxResult<String>();
@@ -323,6 +334,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/toAddView")
+    @ApiIgnore
     public String toAddView(ModelMap map) {
         //获取所有角色列表
         List<ZtreeVo> allRole = roleService.queryAllFormatWithZtree(false, false);
@@ -346,7 +358,8 @@ public class UserController {
      */
     @RequestMapping("/addUser")
     @ResponseBody
-    public AjaxResult<String> addUser(UserQo qo) {
+    @ApiOperation(value = "保存用户", httpMethod = "POST", response = AjaxResult.class, notes = "保存用户")
+    public AjaxResult<String> addUser(@ModelAttribute UserQo qo) {
         logger.debug("新增用户，qo参数：userQo:" + JsonUtil.toJson(qo));
         
         AjaxResult<String> result = new AjaxResult<String>();
@@ -386,5 +399,4 @@ public class UserController {
         }
         return result;
     }
-    
 }
