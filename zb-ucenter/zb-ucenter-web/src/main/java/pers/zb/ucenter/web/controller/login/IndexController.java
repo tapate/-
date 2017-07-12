@@ -11,6 +11,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,9 @@ public class IndexController {
     @Autowired
     private BasicConfigService basicConfigService;
     
+    @Value("#{configProperties['service.url']}")
+    private String SERVICE_URL;
+    
     /**
      * 进入首页
      * 
@@ -63,6 +67,7 @@ public class IndexController {
             }
 
             map.put("menuList", parentMenuList);
+            map.put("serviceUrl", SERVICE_URL);
             return "index";//跳转到index.jsp
         }
         return "login";

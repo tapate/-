@@ -1,5 +1,4 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/view/common/common.jsp"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,21 +10,69 @@
 	<meta http-equiv="Cache-Control" content="no-siteapp" />
 	<link rel="Bookmark" href="${ctx}/resources/images/favicon.ico" >
 	<link rel="Shortcut Icon" href="${ctx}/resources/images/favicon.ico" />
-	<!--[if lt IE 9]>
-	<script type="text/javascript" src="${ctx}/resources/lib/html5shiv.js"></script>
-	<script type="text/javascript" src="${ctx}/resources/lib/respond.min.js"></script>
-	<![endif]-->
 	
-	<!--[if IE 6]>
-	<script type="text/javascript" src="${ctx}/resources/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
-	<script>DD_belatedPNG.fix('*');</script>
-	<![endif]-->
 	<title>用户管理中心系统</title>
 	<meta name="keywords" content="java后台管理系统,hui,web">
 	<meta name="description" content="个人开发的java后台管理系统——用户管理中心。分布式服务的某个服务模块。更多项目介绍请浏览：http://git.oschina.net/zhoubang85/zb ">
+	
+	<%@ include file="/WEB-INF/view/common/common.jsp"%>
+	
+	<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
+    <script type="text/javascript" src="${ctx}/resources/lib/custom/rb-pop.js"></script>
+    <script src="${ctx}/resources/lib/sockjs/0.3.4/sockjs-0.3.min.js"></script>
+    
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        #pop{background:#fff;width:260px;border:1px solid #C1C1C1;font-size:12px;position: fixed;right:10px;bottom:10px;z-index: 999999999;}
+        #popHead{line-height:15px;background:#f6f0f3;border-bottom:1px solid #e0e0e0;position:relative;font-size:12px;padding:0 0 0 10px;}
+        #popHead h5{font-size:12px;color:#666;line-height:15px;height:15px;}
+        #popHead #popClose{position:absolute;right:10px;top:1px;}
+        #popHead a#popClose:hover{color:#f00;cursor:pointer;}
+        #popContent{padding:5px 10px;}
+        #popTitle a{line-height:24px;font-size:14px;font-family:'微软雅黑';color:#333;font-weight:bold;text-decoration:none;}
+        #popTitle a:hover{color:#f60;}
+        #popIntro{text-indent:20px;line-height:160%;margin:5px 0;color:#666;}
+        #popMore{text-align:right;border-top:1px dotted #ccc;line-height:24px;margin:8px 0 0 0;}
+        #popMore a{color:#f60;}
+        #popMore a:hover{color:#f00;}
+    </style>
+    
+    <script type="text/javascript">
+        var ws = null;
+        function connect() {
+        	var userName = $("#userName").val();
+            if ('WebSocket' in window) {
+                ws= new WebSocket("ws://" + $("#serviceUrl").val() + "/websck?loginUserName=" + userName);
+                //console.log("ws://" + $("#serviceUrl").val() + "/websck?loginUserName=" + userName);
+            }else if ('MozWebSocket' in window) {
+                ws = new MozWebSocket("ws://" + $("#serviceUrl").val() + "/websck?loginUserName=" + userName);
+            }else {
+                ws = new SockJS("http://" + $("#serviceUrl").val() + "/sockjs/websck?loginUserName=" + userName);
+                //console.log("http://" + $("#serviceUrl").val() + "/sockjs/websck?loginUserName=" + userName);
+            }
+            ws.onopen = function () {
+            	//console.log("消息推送服务已连接");
+            };
+            
+            //消息监听
+            ws.onmessage = function (event) {
+                //console.log("收到了一条推送消息：" + event.data);
+                var pop=new Pop("收到一条推送消息", "",event.data);
+            };
+            ws.onerror = function (evnt) {
+            };
+            ws.onclose = function (event) {
+            	//console.log("socket服务连接已关闭");
+            	var pop=new Pop("消息推送服务连接已关闭", "",event.data);
+            };
+        }
+        
+        $(document).ready(function(){
+        	connect();//连接消息推送服务
+        });
+    </script>
 </head>
 <body>
-    
     <!-- 页面顶部¨ -->
     <%@ include file="head.jsp"%>
     
@@ -62,68 +109,38 @@
     </div>
 	
 	
-	<!--请在下方写此页面业务相关的脚本-->
+	<!--右下角pop弹窗 end-->
+    <div id="pop" style="display:none;">
+        <div id="popHead">
+           <a id="popClose" title="关闭">关闭</a>
+           <h5>温馨提示</h5>
+        </div>
+        <div id="popContent">
+            <dl>
+                <dt id="popTitle"><a href="javascript:void(0);" target="_blank"></a></dt>
+                <dd id="popIntro">欢迎您！</dd>
+            </dl>
+            <p id="popMore"><a href="javascript:void(0);" target="_blank">查看 »</a></p>
+        </div>
+    </div>
+	 
 	<script type="text/javascript" src="${ctx}/resources/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 	<script type="text/javascript">
-	$(function(){
-	    /*$("#min_title_list li").contextMenu('Huiadminmenu', {
-	        bindings: {
-	            'closethis': function(t) {
-	                console.log(t);
-	                if(t.find("i")){
-	                    t.find("i").trigger("click");
-	                }       
-	            },
-	            'closeall': function(t) {
-	                alert('Trigger was '+t.id+'\nAction was Email');
-	            },
-	        }
-	    });*/
-	});
-	/*个人信息*/
-	function myselfinfo(){
-	    layer.open({
-	        type: 1,
-	        area: ['300px','200px'],
-	        fix: false, //不固定
-	        maxmin: true,
-	        shade:0.4,
-	        title: '查看信息',
-	        content: '<div>管理员信息</div>'
-	    });
-	}
+	   /*个人信息*/
+		function myselfinfo(){
+		    layer.open({
+		        type: 1,
+		        area: ['300px','200px'],
+		        fix: false, //不固定
+		        maxmin: true,
+		        shade:0.4,
+		        title: '查看信息',
+		        content: '<div>管理员信息</div>'
+		    });
+		}
+	</script>
 	
-	/*资讯-添加*/
-	function article_add(title,url){
-	    var index = layer.open({
-	        type: 2,
-	        title: title,
-	        content: url
-	    });
-	    layer.full(index);
-	}
-	/*图片-添加*/
-	function picture_add(title,url){
-	    var index = layer.open({
-	        type: 2,
-	        title: title,
-	        content: url
-	    });
-	    layer.full(index);
-	}
-	/*产品-添加*/
-	function product_add(title,url){
-	    var index = layer.open({
-	        type: 2,
-	        title: title,
-	        content: url
-	    });
-	    layer.full(index);
-	}
-	/*用户-添加*/
-	function member_add(title,url,w,h){
-	    layer_show(title,url,w,h);
-	}
-	</script> 
+	<input type="hidden" id="serviceUrl" value="${serviceUrl}" des="socket服务器域名地址"/>
+	<input type="hidden" id="userName" value="wangwu" des="当前在线用户的用户名"/>
 </body>
 </html>

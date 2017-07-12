@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.TextMessage;
 
@@ -26,13 +27,24 @@ public class SocketController {
     }
     
     /**
-     * 简单的消息服务器推送测试页面
+     * 进入推送消息给指定用户的页面
      * @return
      */
     @RequestMapping("/userpush")
     public String userpush(ModelMap map) {
         map.put("serviceUrl", SERVICE_URL);
         return "socket/push_user";
+    }
+    
+    /**
+     * 进入推送消息给所有用户的页面
+     * @param map
+     * @return
+     */
+    @RequestMapping("/userpush/all")
+    public String userpushAll(ModelMap map) {
+        map.put("serviceUrl", SERVICE_URL);
+        return "socket/push_user_all";
     }
     
     /**
@@ -53,8 +65,10 @@ public class SocketController {
      */
     @RequestMapping("/pushUser")
     @ResponseBody
-    public AjaxResult<String> toUser(HttpServletRequest request,String loginUserName) {
-        systemWebSocketHandler().sendMessageToUser(loginUserName, new TextMessage("这是服务器推送给您的消息。"));
+    public AjaxResult<String> toUser(HttpServletRequest request,
+            String loginUserName,
+            @RequestParam(name="message",required=true,defaultValue="这是服务器推送给您的消息.") String message){
+        systemWebSocketHandler().sendMessageToUser(loginUserName, new TextMessage(message));
         return new AjaxResult<String>();
     }
     
@@ -65,8 +79,9 @@ public class SocketController {
      */
     @RequestMapping("/pushAllUser")
     @ResponseBody
-    public AjaxResult<String> toAllUser(HttpServletRequest request) {
-        systemWebSocketHandler().sendMessageToUsers(new TextMessage("这是一条服务器推送给所有人的消息。"));
+    public AjaxResult<String> toAllUser(HttpServletRequest request,
+            @RequestParam(name="message",required=true,defaultValue="这是一条服务器推送给所有人的消息.") String message){
+        systemWebSocketHandler().sendMessageToUsers(new TextMessage(message));
         return new AjaxResult<String>();
     }
 }
