@@ -1,10 +1,10 @@
 package pers.zb.ucenter.rpc.service.user;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,6 +14,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import pers.zb.common.util.Pager;
+import pers.zb.common.util.enums.FromSystemEnum;
 import pers.zb.common.util.util.CryptoUtils;
 import pers.zb.entity.sys.SysUser;
 import pers.zb.entity.sys.qo.UserQo;
@@ -22,6 +23,7 @@ import pers.zb.ucenter.dao.sys.UserMapper;
 import pers.zb.ucenter.rpc.api.sys.UserRoleService;
 import pers.zb.ucenter.rpc.api.user.UserService;
 import pers.zb.ucenter.rpc.service.BaseServiceImpl;
+import tk.mybatis.mapper.entity.Example;
 
 @Service("userServiceImpl")
 public class UserServiceImpl extends BaseServiceImpl<SysUser> implements UserService {
@@ -40,12 +42,6 @@ public class UserServiceImpl extends BaseServiceImpl<SysUser> implements UserSer
 
     @Override
     public Pager<UserVo> getList(Pager<UserVo> pager, UserQo userQo) {
-        if(!userQo.getHaveUserListPermission()){
-            Subject subject = SecurityUtils.getSubject();
-            SysUser user = getUserByName(String.valueOf(subject.getPrincipal()));
-            userQo.setUserId(user.getId());
-        }
-        
         if (pager.getUsePager()) {
             PageHelper.offsetPage(pager.getOffset(), pager.getLimit());
         }
@@ -93,9 +89,25 @@ public class UserServiceImpl extends BaseServiceImpl<SysUser> implements UserSer
         user.setUserName(qo.getUserName());
         user.setStatus(qo.getStatus());
         user.setPassword(CryptoUtils.encodeMD5(qo.getPassword()));
+        user.setFromSystem(FromSystemEnum.DEFAULT_CURRENT_USER_CENTER);
         userMapper.insert(user);
         
         //保存角色
         userRoleService.updateUserRole(user, qo.getRoleIds());
+    }
+
+    @Override
+    public void deleteUsers(Long[] userIdArr) throws Exception {
+        if(userIdArr != null && userIdArr.length > 0){
+            for (int i = 0; i < userIdArr.length; i++) {
+                //删除用户
+                Example example = new Example(SysUser.class);
+                example.createCriteria().andIn("id", Arrays.asList(userIdArr));
+                userMapper.deleteByExample(example);
+                
+                //删除用户对应的角色信息
+                userRoleService.deleteByUserId(userIdArr[i]);
+            }
+        }
     }
 }

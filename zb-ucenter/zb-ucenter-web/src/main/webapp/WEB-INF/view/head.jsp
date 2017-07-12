@@ -1,50 +1,48 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/view/common/taglibs.jsp"%>
-<script type="text/javascript">
-//时间设置
-function currentTime(){ 
-  var d=new Date(),str=''; 
-  str+=d.getFullYear()+'年'; 
-  str+=d.getMonth() + 1+'月'; 
-  str+=d.getDate()+'日'; 
-  str+=d.getHours()+'时'; 
-  str+=d.getMinutes()+'分'; 
-  str+= d.getSeconds()+'秒'; 
-  return str; 
-} 
-setInterval(function(){$('#time').html(currentTime)},1000); 
-</script>
-<div class="navbar navbar-inverse" style="background-color: white;border-color:white;margin-top:-1px;margin-left: -1px;margin-right: -1px;">
-  <div class="navbar-inner">
-   <div class="container-fluid" style="line-height: 40px;">
-	  <a style="margin-left: 20px;" class="brand" href="${ctx}/index"><small><i class="icon-leaf"></i> 愚昧者怨天尤人，无能者长吁短叹，儒弱者颓然放弃。</small> </a>
-	  <ul class="nav ace-nav pull-right">
-		     <li class="light-blue" style="width: 280px;float: left;">
-		        <a class="user-menu dropdown-toggle" style="cursor: text;">系统时间：
-                    <span class="time"><em id="time" style="font-style: normal;"></em></span>
-                </a>
-		     </li>
-			<li class="light-blue user-profile" style="width: 163px;float: left;">
-				<a class="user-menu dropdown-toggle" data-toggle="dropdown">
-					<img alt="FH" src="<c:url value="/resources/images/user.jpg"/>" class="nav-user-photo" />
-					<span id="user_info">
-						<span id="user_info"><small>Welcome</small> <shiro:principal/></span>
-					</span>
-					<i class="icon-caret-down"></i>
-				</a>
-				<ul id="user_menu" class="pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
-					<!-- <li><a onclick="editUserH();" style="cursor:pointer;"><i class="icon-user"></i> 修改资料</a></li>
-					<li id="systemset"><a onclick="editSys();" style="cursor:pointer;"><i class="icon-cog"></i> 系统设置</a></li>
-					<li id="productCode"><a onclick="productCode();" style="cursor:pointer;"><i class="icon-cogs"></i> 代码生成</a></li>
-					<li class="divider"></li> -->
-					<li><a href="<c:url value="/login/logout"/>"><i class="icon-off"></i> 退出</a></li>
-				</ul>
-			</li>
-	  </ul>
-   </div>
-  </div>
+
+<header class="navbar-wrapper">
+    <div class="navbar navbar-fixed-top">
+        <div class="container-fluid cl"> <span class="logo navbar-logo f-l mr-10 hidden-xs" onclick="javascript:window.location.reload();">用户管理中心系统</span> 
+            <span class="logo navbar-slogan f-l mr-10 hidden-xs">1.0</span> 
+            <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+            <nav class="nav navbar-nav">
+                <ul class="cl">
+                    <li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe602;</i> CAS单点登录中央认证系统 <i class="Hui-iconfont">&#xe6d5;</i></a>
+                        <ul class="dropDown-menu menu radius box-shadow">
+                            <li><a href="javascript:;" onclick="article_add('OA办公系统','article-add.html')"><i class="Hui-iconfont">&#xe616;</i> OA办公系统</a></li>
+                            <li><a href="javascript:;" onclick="picture_add('资源文件管理系统','picture-add.html')"><i class="Hui-iconfont">&#xe613;</i> 资源文件管理系统</a></li>
+                            <li><a href="javascript:;" onclick="product_add('用户管理中心系统','product-add.html')"><i class="Hui-iconfont">&#xe620;</i> 用户管理中心系统</a></li>
+                            <li><a href="javascript:;" onclick="member_add('支付对账系统','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i> 支付对账系统</a></li>
+                            <li><a href="javascript:;" onclick="member_add('文件内容系统','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i> 文件内容系统</a></li>
+                            <li><a href="javascript:;" onclick="member_add('消息服务总线系统','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i> 消息服务总线系统</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+            <ul class="cl">
+                <li>欢迎你</li>
+                <li class="dropDown dropDown_hover">
+                    <a href="#" class="dropDown_A"><shiro:principal/> <i class="Hui-iconfont">&#xe6d5;</i></a>
+                    <ul class="dropDown-menu menu radius box-shadow">
+                        <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
+                        <li><a href="${ctx}/login/logout">退出</a></li>
+                </ul>
+            </li>
+                <li id="Hui-msg"> <a href="#" title="系统消息"><span class="badge badge-danger">3</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+                <li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
+                    <ul class="dropDown-menu menu radius box-shadow">
+                        <li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
+                        <li><a href="javascript:;" data-val="blue" title="蓝色">蓝色</a></li>
+                        <li><a href="javascript:;" data-val="green" title="绿色">绿色</a></li>
+                        <li><a href="javascript:;" data-val="red" title="红色">红色</a></li>
+                        <li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
+                        <li><a href="javascript:;" data-val="orange" title="橙色">橙色</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
-
-
-<!--引入属于此页面的js -->
-<script type="text/javascript" src="<c:url value="/resources/js/index/head.js"/>"></script>
+</header>

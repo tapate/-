@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pers.zb.common.util.AjaxResult;
+import pers.zb.common.util.JQDatatableResult;
 import pers.zb.common.util.Pager;
 import pers.zb.common.util.enums.Status;
 import pers.zb.common.util.util.JsonUtil;
@@ -77,9 +78,15 @@ public class RoleController {
      */
     @RequestMapping("/list")
     @ResponseBody
-    public Object list(Pager<RoleVo> pager, SysRole role) {
+    public JQDatatableResult<RoleVo> list(Pager<RoleVo> pager, SysRole role) {
         pager = roleService.getList(pager, role);
-        return pager;
+
+        JQDatatableResult<RoleVo> result = new JQDatatableResult<RoleVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     /**

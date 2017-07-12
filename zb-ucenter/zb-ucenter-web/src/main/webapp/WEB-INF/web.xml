@@ -81,11 +81,13 @@
     <filter-mapping>
         <filter-name>shiroFilter</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ASYNC</dispatcher>
     </filter-mapping>
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
     <welcome-file-list>
-        <welcome-file>/index.jsp</welcome-file>
+        <welcome-file></welcome-file>
     </welcome-file-list>
 </web-app>

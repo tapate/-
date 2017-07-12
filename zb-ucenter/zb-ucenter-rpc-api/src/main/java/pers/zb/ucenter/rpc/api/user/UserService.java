@@ -60,4 +60,11 @@ public interface UserService extends BaseService<SysUser> {
      * @throws Exception
      */
     void saveUser(UserQo qo) throws Exception;
+
+    /**
+     * 批量删除用户
+     * @param userIdArr
+     * @throws Exception
+     */
+    void deleteUsers(Long[] userIdArr) throws Exception;
 }

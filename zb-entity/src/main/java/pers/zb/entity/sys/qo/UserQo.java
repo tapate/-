@@ -2,40 +2,41 @@ package pers.zb.entity.sys.qo;
 
 import java.io.Serializable;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import pers.zb.common.util.enums.FromSystemEnum;
 import pers.zb.common.util.enums.UserStatus;
 
-@ApiModel(value = "UserQo", description = "用户信息请求类")
-public class UserQo implements Serializable{
-    
+public class UserQo implements Serializable {
+
     private static final long serialVersionUID = -4815652578119718069L;
-    
-    @ApiModelProperty(value = "角色id")
+
     private Long roleId;// 角色id
-    
-    @ApiModelProperty(value = "姓名")
+
     private String realName;// 姓名
-    
-    @ApiModelProperty(value = "账户名")
+
     private String userName;// 账户名
-    
-    @ApiModelProperty(value = "状态")
+
     private UserStatus status;// 状态
-    
-    @ApiModelProperty(value = "用户id")
+
+    private FromSystemEnum fromSystem;// 来源系统
+
     private Long userId;
-    
-    @ApiModelProperty(value = "密码")
+
+    private Long[] userIdArr;
+
     private String password;// 密码
-    
-    @ApiModelProperty(value = "用户拥有的角色id集合")
+
     private Long[] roleIds;// 用户拥有的角色id集合
 
-    @ApiModelProperty(value = "是否拥有查看用户列表权限")
     private boolean haveUserListPermission;// 是否拥有查看用户列表权限
 
-    
+    public Long[] getUserIdArr() {
+        return userIdArr;
+    }
+
+    public void setUserIdArr(Long[] userIdArr) {
+        this.userIdArr = userIdArr;
+    }
+
     public boolean getHaveUserListPermission() {
         return haveUserListPermission;
     }
@@ -58,6 +59,14 @@ public class UserQo implements Serializable{
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public FromSystemEnum getFromSystem() {
+        return fromSystem;
+    }
+
+    public void setFromSystem(FromSystemEnum fromSystem) {
+        this.fromSystem = fromSystem;
     }
 
     public Long[] getRoleIds() {

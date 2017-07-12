@@ -112,7 +112,7 @@ $(document).ready(function(){
 			var faceIcon = "";
 			
 			for(var i = 1; i <= 130; i ++){
-				var path = "/" + getProjectName() + '/resources/images/chat/face/' + i + ".gif";
+				var path = $("#basePathUrl").val() + '/resources/images/chat/face/' + i + ".gif";
 				faceIcon += '<span class="face-item" onclick="CHAT.selectFace(\'' + path + '\')">'
 				faceIcon += '<img src="' + path + '"/>';
 				faceIcon += '</span>';
@@ -207,7 +207,7 @@ $(document).ready(function(){
 					//触发一个送鲜花的特效
 					$(document).snowfall('clear');
 					$(document).snowfall({
-						image: "/" + getProjectName() + "/resources/images/chat/face/50.gif",
+						image: $("#basePathUrl").val() + "/resources/images/chat/face/50.gif",
 						flakeCount:60,
 						minSize:20,
 						maxSize:40
@@ -258,15 +258,19 @@ $(document).ready(function(){
 
 document.onkeydown = function(event) {
 	var e = event || window.event || arguments.callee.caller.arguments[0];
+	if(e.shiftKey&&event.keyCode==13){ 
+		$("#send-message").append("\n"); 
+	} 
 	if (e && e.keyCode == 27) { // 按 Esc 
 		//要做的事情
 	}
 	if (e && e.keyCode == 113) { // 按 F2 
 		//要做的事情
 	}
-	if (e && e.keyCode == 13) { // enter 键
+	if (e && e.keyCode == 13 && !e.shiftKey) { // enter 键
+		event.returnValue = false;
+		event.preventDefault();
 		//要做的事情
 		CHAT.sendText();
-		$("#send-message").html("");
 	}
 }; 

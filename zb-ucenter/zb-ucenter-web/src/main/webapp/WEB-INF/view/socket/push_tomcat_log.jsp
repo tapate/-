@@ -7,8 +7,6 @@
 <meta name="description" content="overview & stats" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link href="${ctx}/resources/css/style.css" rel="stylesheet">
-    
 <title>WebSocket/SockJS tomcat日志实时监控</title>
     <style type="text/css">
 #connect-container {
@@ -63,7 +61,7 @@
 /*滚动条样式设置*/
 </style>
 
-    <script src="${ctx}/resources/js/sockjs-0.3.min.js"></script>
+    <script src="${ctx}/resources/lib/sockjs/0.3.4/sockjs-0.3.min.js"></script>
 
     <script type="text/javascript">
         var ws = null;

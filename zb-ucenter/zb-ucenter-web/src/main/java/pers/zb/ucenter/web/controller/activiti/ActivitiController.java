@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import pers.zb.common.util.AjaxResult;
+import pers.zb.common.util.JQDatatableResult;
 import pers.zb.common.util.Pager;
 import pers.zb.common.util.util.JsonUtil;
 import pers.zb.entity.activiti.qo.ProcessQo;
@@ -76,11 +77,17 @@ public class ActivitiController {
      */
     @RequestMapping("/processList")
     @ResponseBody
-    public Object list(Pager<ProcessVo> pager, ProcessQo processQo) {
+    public JQDatatableResult<ProcessVo> list(Pager<ProcessVo> pager, ProcessQo processQo) {
         logger.debug("获取已经部署的工作流列表，processQo:" + JsonUtil.toJson(processQo));
         pager = processListService.getList(pager, processQo);
         logger.debug("已经部署的工作流列表:" + JsonUtil.toJson(pager.getRows()));
-        return pager;
+        
+        JQDatatableResult<ProcessVo> result = new JQDatatableResult<ProcessVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
 
     /**

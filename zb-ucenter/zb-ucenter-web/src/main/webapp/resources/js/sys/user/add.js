@@ -1,39 +1,66 @@
 $(function(){
-    formValidate("#userAddForm",{
-    	userName:{
-            required: true,
-            isLetterNumber:true
+	    $("#form-user-add").validate({
+        rules:{
+        	userName:{
+                required:true,
+                minlength:5,
+                maxlength:20
+            },
+            password:{
+                required:true,
+                minlength:6,
+                maxlength:20
+            },
+            realName:{
+                required:true
+            }
         },
-        password:{
-        	required: true,
-        	isLetterNumber:true,
-        	minlength:6
+        messages: {
+            userName: "请输入登录账户，长度5-20位",
+            password: "请输入登录密码，长度6-20位",
+            realName: "请输入真实用户名"
         },
-        realName:{
-            required: true,
-            isChineseLetter:true
-        },
-        status:{
-            required: true
+        onkeyup:false,
+        focusCleanup:true,
+        success:"",
+        submitHandler:function(form){
+        	var options = {
+                type: $(form).attr("method"),
+                url: $(form).attr("action"),
+                success : formResponse,
+                dataType: 'json',  
+                error : function(xhr, status, err) {
+                }  
+            };   
+            $(form).ajaxSubmit(options);
         }
-    },{
-    	userName:{
-       		required:"请输入登录账户名",
-       		isLetterNumber:"账户名只能输入字母或者数字"
-       	},
-       	password:{
-	    	required:"请输入登录密码",
-	    	isLetterNumber:"密码只能输入字母或者数字",
-	    	minlength:"密码长度至少6位"
-	    },
-	    realName:{
-	    	required:"请输入真实姓名",
-	    	isChineseLetter:"真实姓名只能输入中文与字母"
-	    }
     });
-});  
+});
 
 
+/*表单回调函数*/
+function formResponse(responseText, statusText){
+    if(responseText.code == 200){
+        layer.msg("添加成功,2秒后自动关闭窗口", {
+            shift: 2,
+            time : 2000,
+            icon: 6
+        },function(){
+        	//关闭弹出框
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+        
+        $("#searchBtn", parent.document).click();
+    }else{
+        layer.msg(responseText.msg, {
+            shift: 2,
+            icon: 5
+        });
+        return false;
+    }
+}
+ 
 function checkRole() {
     var zTree = $.fn.zTree.getZTreeObj("roleTree"), 
     type = {"Y" : "ps","N" : "ps"};
@@ -52,7 +79,7 @@ $(document).ready(function() {
         },
         callback : {
             onCheck : function(event, treeId, treeNode){//节点被点击后，设置选择的节点id
-            	check_param();
+                check_param();
             }
         }
     };
@@ -76,49 +103,11 @@ function check_param() {
         }
         $("#roleIds").val(pmss);
     } else {
-    	$("#roleIds").val("");
+        $("#roleIds").val("");
         numberval++;
     }
     if (numberval > 0) {
         return false;
     }
     return true;
-}
-
-
-function userSubmitForm(parentIndex){
-    var s=$("#userAddForm").validate().form();
-    if(s){
-    	if(!check_param()){
-    		layer.msg("请为该用户赋予角色", {
-                shift: 2,
-                icon: 5
-            });
-            return false;
-        }
-        
-        $.ajax({
-            type : "post",
-            url : $("#addUserUrl").val(),
-            data : $("#userAddForm").serialize(),
-            dataType : "json",
-            success : function(data) {
-                if(data.code == 200){
-                    layer.msg('新增成功', {
-                        shift: 2,
-                        icon: 6
-                    });
-                    closeMsg(parentIndex);
-                    
-                    $('#userListTable').bootstrapTable("refresh");
-                }else{
-                    layer.msg(data.msg, {
-                        shift: 2,
-                        icon: 5
-                    });
-                    closeMsg(parentIndex);
-                }
-            }
-        });
-    }
 }

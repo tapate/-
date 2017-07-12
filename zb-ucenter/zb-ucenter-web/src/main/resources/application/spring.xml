@@ -18,6 +18,9 @@
                         http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
                         http://www.springframework.org/schema/mvc  
                         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+    
+    <context:component-scan base-package="pers.zb.*"/>
+    
     <!-- 如果配置了<mvc:annotation-driven />，则RequestMappingHandlerMapping这个bean中配置的自定义拦截器不会生效。 需要使用<mvc:interceptors>配置拦截器才可以。-->
 
     <!-- 处理responseBody 里面日期类型 -->  
@@ -37,8 +40,6 @@
         </mvc:message-converters>  
     </mvc:annotation-driven>
 	 
-	<context:component-scan base-package="pers.zb.*"/>
-    
 	<!-- 
 	[项目集成了redis缓存了。ehcache暂时不用。如果想切换成ehcache，则将注释去掉即可。同时在shiro的核心配置中，指定ehcacheManage配置]
     <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

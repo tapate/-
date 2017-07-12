@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pers.zb.common.util.AjaxResult;
+import pers.zb.common.util.JQDatatableResult;
 import pers.zb.common.util.Pager;
 import pers.zb.common.util.enums.Status;
 import pers.zb.common.util.util.JsonUtil;
@@ -60,9 +61,15 @@ public class PermissionController {
      */
     @RequestMapping("/list")
     @ResponseBody
-    public Object list(Pager<PermissionVo> pager, SysPermission permission) {
+    public JQDatatableResult<PermissionVo> list(Pager<PermissionVo> pager, SysPermission permission) {
         pager = permissionService.getList(pager, permission);
-        return pager;
+
+        JQDatatableResult<PermissionVo> result = new JQDatatableResult<PermissionVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     

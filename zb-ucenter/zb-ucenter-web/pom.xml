@@ -42,6 +42,11 @@
             <artifactId>zb-wechat-rpc-api</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>pers.zb.socket</groupId>
+            <artifactId>zb-socket</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!-- ===================引入自己的项目模块 =================== -->
     </dependencies>
 </project>

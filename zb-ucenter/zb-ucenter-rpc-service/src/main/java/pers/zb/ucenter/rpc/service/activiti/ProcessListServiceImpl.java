@@ -37,14 +37,9 @@ public class ProcessListServiceImpl implements ProcessListService {
         List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery().listPage(pager.getOffset(), pager.getLimit());
         int total = repositoryService.createProcessDefinitionQuery().list().size();
 
-        List<ProcessVo> rows = null;
+        List<ProcessVo> rows = new ArrayList<ProcessVo>();
 
         for (ProcessDefinition process : processDefinitionList) {
-            // 初始化集合大小
-            if (rows == null) {
-                rows = new ArrayList<ProcessVo>();
-            }
-
             ProcessVo vo = new ProcessVo();
             vo.setDeploymentId(process.getDeploymentId());
             vo.setId(process.getId());

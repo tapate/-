@@ -25,6 +25,7 @@
 	<typeHandlers>
 		<typeHandler handler="pers.zb.common.util.enums.entity.EntityEnumTypeHandler" javaType="pers.zb.common.util.enums.Status" />
 		<typeHandler handler="pers.zb.common.util.enums.entity.EntityEnumTypeHandler" javaType="pers.zb.common.util.enums.UserStatus" />
+		<typeHandler handler="pers.zb.common.util.enums.entity.EntityEnumTypeHandler" javaType="pers.zb.common.util.enums.FromSystemEnum" />
 		<typeHandler handler="pers.zb.common.util.enums.entity.EntityEnumTypeHandler" javaType="pers.zb.common.util.enums.order.OrderSource" />
 		<typeHandler handler="pers.zb.common.util.enums.entity.EntityEnumTypeHandler" javaType="pers.zb.common.util.enums.activiti.LeaveType" />
 	</typeHandlers>

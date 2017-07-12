@@ -1,115 +1,197 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/view/common/taglibs.jsp"%>
+<%@ include file="/WEB-INF/view/common/common.jsp"%>
 
 <!DOCTYPE html>
 <head>
-    <meta name="description" content="overview & stats" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%@ include file="/WEB-INF/view/common/common.jsp"%>
-    <link href="${ctx}/resources/css/style.css" rel="stylesheet">
-    
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            $(".t_Record").width($(window).width() - 320);
-            //当文档窗口发生改变时 触发  
-            $(window).resize(function() {
-                $(".t_Record").width($(window).width() - 320);
-            });
-            
-            var projectDebuggingTip = $("#projectDebuggingTip").val();
-            if(projectDebuggingTip != "" && projectDebuggingTip != undefined && projectDebuggingTip == 1){
-            	//alert("网站开发者此时正在调试、更新当前网站，您在操作的时候可能会出现一些小问题^_^");
-            	$("#projectDebuggingTipModal").modal("toggle")
-            }
-        });
-    </script>
+    <meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="${ctx}/resources/lib/html5shiv.js"></script>
+	<script type="text/javascript" src="${ctx}/resources/lib/respond.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/static/h-ui.admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/lib/Hui-iconfont/1.0.8/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/static/h-ui.admin/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/static/h-ui.admin/css/style.css" />
+	<!--[if IE 6]>
+	<script type="text/javascript" src="${ctx}/resources/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
 </head>
 <body>
-	<div class="page-content clearfix">
-		<div class="alert alert-block alert-success" style="margin-left: 10px;">
-			<button type="button" class="close" data-dismiss="alert">
-				<i class="icon-remove"></i>
-			</button>
-			<i class="icon-ok green"></i>欢迎访问<strong class="orange">&nbsp;JAVA技术后台管理系统(v3.0)</strong>，你本次登陆时间为<strong class="orange">&nbsp;${curTime}</strong>，登陆IP：<strong class="orange">&nbsp;${clientIp}</strong>.
-		</div>
-		
-		<!-- 
-		<div class="state-overview clearfix">
-			<div class="col-lg-3 col-sm-6">
-				<section class="panel">
-					<a target="_blank" href="http://git.oschina.net/zhoubang85/" title="http://git.oschina.net/zhoubang85/">
-						<div class="symbol terques">
-							<i class="icon-github-sign"></i>
-						</div>
-						<div class="value">
-							<h3 style="margin-left: -30px">我的开源中国</h3>
-							<p style="margin-left: -40px;margin-top: 10px;">http://git.oschina.net/zhoubang85/</p>
-						</div>
-					</a>
-				</section>
-			</div>
-			<div class="col-lg-3 col-sm-6">
-                <section class="panel">
-                    <a target="_blank" href="http://git.oschina.net/zhoubang85/zb-server/" title="http://git.oschina.net/zhoubang85/zb-server/">
-                        <div class="symbol red">
-                            <i class=" icon-globe"></i>
-                        </div>
-                        <div class="value">
-                            <h3 style="margin-left: -30px">项目永久域名</h3>
-                            <p style="margin-left: -40px;margin-top: 10px;">www.2b2b92b.com</p>
-                        </div>
-                    </a>
-                </section>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <section class="panel">
-                    <a target="_blank" href="http://git.oschina.net/zhoubang85/zb-server/" title="http://git.oschina.net/zhoubang85/zb-server/">
-                        <div class="symbol yellow">
-                            <i class="icon-twitter"></i>
-                        </div>
-                        <div class="value">
-                            <h3 style="margin-left: -30px">项目免费开源</h3>
-                            <p style="margin-left: -40px;margin-top: 10px;">提倡开源、免费分享</p>
-                        </div>
-                    </a>
-                </section>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <section class="panel">
-                    <a target="_blank" href="http://git.oschina.net/zhoubang85/zb-server/" title="http://git.oschina.net/zhoubang85/zb-server/">
-                        <div class="symbol darkblue">
-                            <i class="icon-thumbs-up"></i>
-                        </div>
-                        <div class="value">
-                            <h2 style="margin-left: -30px">${sourceCount}</h2>
-                            <p style="margin-left: -40px;margin-top: 10px;">项目源码、技术资源免费分享数量累计</p>
-                        </div>
-                    </a>
-                </section>
-            </div>
-		</div>
-		 -->
+	<div class="page-container">
+	    <p class="f-20 text-success">欢迎访问  [ 用户管理中心系统 <span class="f-14">1.0</span> ]</p>
+	    <p>今日登录次数：18 </p>
+	    <p>上次登录IP：222.35.131.79.1  上次登录时间：2014-6-14 11:19:55</p>
+	    <table class="table table-border table-bordered table-bg">
+	        <thead>
+	            <tr>
+	                <th colspan="7" scope="col">信息统计</th>
+	            </tr>
+	            <tr class="text-c">
+	                <th>统计</th>
+	                <th>资讯库</th>
+	                <th>图片库</th>
+	                <th>产品库</th>
+	                <th>用户</th>
+	                <th>管理员</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr class="text-c">
+	                <td>总数</td>
+	                <td>92</td>
+	                <td>9</td>
+	                <td>0</td>
+	                <td>8</td>
+	                <td>20</td>
+	            </tr>
+	            <tr class="text-c">
+	                <td>今日</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	            </tr>
+	            <tr class="text-c">
+	                <td>昨日</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	            </tr>
+	            <tr class="text-c">
+	                <td>本周</td>
+	                <td>2</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	            </tr>
+	            <tr class="text-c">
+	                <td>本月</td>
+	                <td>2</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	                <td>0</td>
+	            </tr>
+	        </tbody>
+	    </table>
+	    <table class="table table-border table-bordered table-bg mt-20">
+	        <thead>
+	            <tr>
+	                <th colspan="2" scope="col">服务器信息</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr>
+	                <th width="30%">服务器计算机名</th>
+	                <td><span id="lbServerName">http://127.0.0.1/</span></td>
+	            </tr>
+	            <tr>
+	                <td>服务器IP地址</td>
+	                <td>192.168.1.1</td>
+	            </tr>
+	            <tr>
+	                <td>服务器域名</td>
+	                <td>www.h-ui.net</td>
+	            </tr>
+	            <tr>
+	                <td>服务器端口 </td>
+	                <td>80</td>
+	            </tr>
+	            <tr>
+	                <td>服务器IIS版本 </td>
+	                <td>Microsoft-IIS/6.0</td>
+	            </tr>
+	            <tr>
+	                <td>本文件所在文件夹 </td>
+	                <td>D:\WebSite\HanXiPuTai.com\XinYiCMS.Web\</td>
+	            </tr>
+	            <tr>
+	                <td>服务器操作系统 </td>
+	                <td>Microsoft Windows NT 5.2.3790 Service Pack 2</td>
+	            </tr>
+	            <tr>
+	                <td>系统所在文件夹 </td>
+	                <td>C:\WINDOWS\system32</td>
+	            </tr>
+	            <tr>
+	                <td>服务器脚本超时时间 </td>
+	                <td>30000秒</td>
+	            </tr>
+	            <tr>
+	                <td>服务器的语言种类 </td>
+	                <td>Chinese (People's Republic of China)</td>
+	            </tr>
+	            <tr>
+	                <td>.NET Framework 版本 </td>
+	                <td>2.050727.3655</td>
+	            </tr>
+	            <tr>
+	                <td>服务器当前时间 </td>
+	                <td>2014-6-14 12:06:23</td>
+	            </tr>
+	            <tr>
+	                <td>服务器IE版本 </td>
+	                <td>6.0000</td>
+	            </tr>
+	            <tr>
+	                <td>服务器上次启动到现在已运行 </td>
+	                <td>7210分钟</td>
+	            </tr>
+	            <tr>
+	                <td>逻辑驱动器 </td>
+	                <td>C:\D:\</td>
+	            </tr>
+	            <tr>
+	                <td>CPU 总数 </td>
+	                <td>4</td>
+	            </tr>
+	            <tr>
+	                <td>CPU 类型 </td>
+	                <td>x86 Family 6 Model 42 Stepping 1, GenuineIntel</td>
+	            </tr>
+	            <tr>
+	                <td>虚拟内存 </td>
+	                <td>52480M</td>
+	            </tr>
+	            <tr>
+	                <td>当前程序占用内存 </td>
+	                <td>3.29M</td>
+	            </tr>
+	            <tr>
+	                <td>Asp.net所占内存 </td>
+	                <td>51.46M</td>
+	            </tr>
+	            <tr>
+	                <td>当前Session数量 </td>
+	                <td>8</td>
+	            </tr>
+	            <tr>
+	                <td>当前SessionID </td>
+	                <td>gznhpwmp34004345jz2q3l45</td>
+	            </tr>
+	            <tr>
+	                <td>当前系统用户名 </td>
+	                <td>NETWORK SERVICE</td>
+	            </tr>
+	        </tbody>
+	    </table>
 	</div>
-
-
-    <!-- 项目处于管理员调试、修改状态，弹出提示框 -->
-	<div class="modal fade" id="projectDebuggingTipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">友情提示</h4>
-				</div>
-				<div class="modal-body">网站开发者此时正在调试当前网站，浏览的时候如果出现数据不显示，不要担心哈^_^</div>
-				<div class="modal-footer">
-					<!-- <button type="button" class="btn btn-default" data-dismiss="modal">我知道了</button> -->
-					<button type="button" data-dismiss="modal" class="btn btn-primary">我知道了</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- 标识项目是否处于管理员调试、修改状态，弹出提示框 -->
-	<input type="hidden" id="projectDebuggingTip" value="${projectDebuggingTip}"/>
+	<footer class="footer mt-20">
+	    <div class="container">
+	        <p>感谢jQuery、layer、laypage、Validform、UEditor、My97DatePicker、iconfont、Datatables、WebUploaded、icheck、highcharts、bootstrap-Switch<br>
+	            Copyright &copy;2015-2017 H-ui.admin 3.0 All Rights Reserved.<br>
+	            本后台系统由<a href="http://www.h-ui.net/" target="_blank" title="H-ui前端框架">H-ui前端框架</a>提供前端技术支持</p>
+	    </div>
+	</footer>
 </body>
 </html>

@@ -8,6 +8,7 @@
 	    <result column="password" property="password" jdbcType="VARCHAR" />
 	    <result column="real_name" property="realName" jdbcType="VARCHAR" />
 	    <result column="status" property="status" jdbcType="TINYINT" />
+	    <result column="from_system" property="fromSystem" jdbcType="TINYINT" />
 	    <result column="open_id" property="openId" jdbcType="VARCHAR" />
 	     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 	    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
@@ -15,7 +16,7 @@
 
 	<!-- 根据用户名获取用户 -->
 	<select id="getUserByName" resultMap="sysUser_Map">
-		SELECT u.`id`,u.`user_name` userName,u.`password`,u.`real_name` realName,u.`status`,open_id openId,u.`create_time` createTime,u.`update_time` updateTime 
+		SELECT u.`id`,u.`user_name` userName,u.`password`,u.`real_name` realName,u.`status`,u.from_system fromSystem,open_id openId,u.`create_time` createTime,u.`update_time` updateTime 
 		FROM `sys_user` u
 		<where>
 			<if test="userName != null">
@@ -27,7 +28,7 @@
 	
 	<!-- 获取用户列表 -->
     <select id="getUserList"  resultType="UserVo">  
-        SELECT u.`id` userId,u.`user_name` userName,u.`real_name` realName,u.`status` 'status' ,u.`create_time` createTime,u.`update_time` updateTime,
+        SELECT u.`id` userId,u.`user_name` userName,u.`real_name` realName,u.`status` 'status' ,u.from_system fromSystem,u.`create_time` createTime,u.`update_time` updateTime,
         (SELECT GROUP_CONCAT(r.`name`) FROM sys_user_role ur  LEFT JOIN sys_role r ON r.`id` = ur.`role_id` WHERE ur.`user_id` = u.`id`) roleName 
         FROM sys_user u
         LEFT JOIN sys_user_role ur2 ON ur2.`user_id` = u.`id`
@@ -40,6 +41,9 @@
             </if>
             <if test="userQo.status!=null">
                 AND u.`status` = #{userQo.status}
+            </if>
+            <if test="userQo.fromSystem!=null">
+                AND u.`from_system` = #{userQo.fromSystem}
             </if>
             <if test="userQo.userId!=null">
                 AND u.`id` = #{userQo.userId}

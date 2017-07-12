@@ -9,7 +9,7 @@ redis缓存目前是主流的.建议使用redis缓存
  
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
    
-	<diskStore path="${java.io.tmpdir}/zb-web/cache" />
+	<diskStore path="${java.io.tmpdir}/zb/cache" />
     
     <!-- 
 		name:缓存名称。

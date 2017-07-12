@@ -15,14 +15,10 @@
                         http://www.springframework.org/schema/mvc  
                         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 	
-	<context:component-scan base-package="pers.zb.*"/>
-	
     <!-- 激活自动代理功能 -->
     <aop:aspectj-autoproxy proxy-target-class="true" />
     
-	<mvc:default-servlet-handler/>
-	
-    <!-- <mvc:resources mapping="/resources/**" location="/resources/" /> -->
+    <mvc:resources mapping="/resources/**" location="/resources/" />
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages" />
@@ -56,8 +52,4 @@
 		</property>
 	</bean>
     
-    
-    <!-- swagger配置注册 -->
-    <!-- <bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig"></bean> -->
-    <bean class="pers.zb.ucenter.web.swagger.SwaggerConfig"></bean>
 </beans>

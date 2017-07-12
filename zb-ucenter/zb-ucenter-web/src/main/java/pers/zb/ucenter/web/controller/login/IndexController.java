@@ -25,7 +25,7 @@ import pers.zb.ucenter.rpc.api.basic.BasicSourceDownloadService;
 import pers.zb.ucenter.rpc.api.sys.MenuService;
 
 @Controller
-@RequestMapping("/index")
+@RequestMapping(value="")
 public class IndexController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -46,7 +46,7 @@ public class IndexController {
      * 
      * @return
      */
-    @RequestMapping("")
+    @RequestMapping(value="")
     public String page(ModelMap map) {
         Subject currentUser = SecurityUtils.getSubject();
         // 验证是否成功登录的方法
@@ -63,16 +63,16 @@ public class IndexController {
             }
 
             map.put("menuList", parentMenuList);
-            return "/index";//跳转到index.jsp
+            return "index";//跳转到index.jsp
         }
-        return "/login";
+        return "login";
     }
 
     /**
      * /index 请求 ， 进入首页后的默认页面 
      * @return
      */
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/main")
     public String defaultPage(HttpServletRequest request,ModelMap map) {
         String clientIp = getIpAddr(request);
         map.put("clientIp", clientIp);
@@ -82,10 +82,10 @@ public class IndexController {
         
         BasicConfig basicConfig = basicConfigService.getConfigByName(BasicConfigEnum.project_debugging_tip.toString());
         if(basicConfig != null){
-            logger.info("是否开启网站在线调试提示信息:" + JsonUtil.toJson(basicConfig));
+            logger.debug("是否开启网站在线调试提示信息:" + JsonUtil.toJson(basicConfig));
             map.put("projectDebuggingTip", basicConfig.getConfigValue());
         }
-        return "/main";
+        return "main";
     }
 
     /**

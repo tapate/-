@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import pers.zb.common.util.enums.FromSystemEnum;
 import pers.zb.common.util.enums.UserStatus;
 
 public class SysUser implements Serializable {
@@ -22,6 +23,7 @@ public class SysUser implements Serializable {
     private String realName;// 真实姓名
     private UserStatus status;// 账户状态
     private String openId;// 微信openid
+    private FromSystemEnum fromSystem;// 来源哪个系统。(后期会进行与第三方系统做用户数据对接，默认为当前系统用户中心)
 
     private Date createTime;
     private Date updateTime;
@@ -64,6 +66,14 @@ public class SysUser implements Serializable {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public FromSystemEnum getFromSystem() {
+        return fromSystem;
+    }
+
+    public void setFromSystem(FromSystemEnum fromSystem) {
+        this.fromSystem = fromSystem;
     }
 
     public String getOpenId() {

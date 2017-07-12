@@ -3,9 +3,9 @@ package pers.zb.entity.sys.vo;
 import java.io.Serializable;
 import java.util.Date;
 
+import pers.zb.common.util.enums.FromSystemEnum;
 import pers.zb.common.util.enums.UserStatus;
 import pers.zb.entity.sys.SysUser;
-
 
 /**
  * 
@@ -13,19 +13,38 @@ import pers.zb.entity.sys.SysUser;
  * 创建日期：2016年8月3日 下午3:38:08 操作用户：zhoubang
  * 
  */
-public class UserVo implements Serializable{
-    
+public class UserVo implements Serializable {
+
     private static final long serialVersionUID = 851019162980632315L;
-    
+
     private Long userId;
     private String userName;// 账户名
     private String realName;// 真实姓名
     private String roleName;// 所属角色名称
     private UserStatus status;// 账户状态
     private String statusName;// 账户状态描述
-    
+
+    private FromSystemEnum fromSystem;// 来源系统枚举
+    private String fromSystemName;// 来源系统名称
+
+    public FromSystemEnum getFromSystem() {
+        return fromSystem;
+    }
+
+    public void setFromSystem(FromSystemEnum fromSystem) {
+        this.fromSystem = fromSystem;
+    }
+
+    public String getFromSystemName() {
+        return fromSystem.getDescription();
+    }
+
+    public void setFromSystemName(String fromSystemName) {
+        this.fromSystemName = fromSystemName;
+    }
+
     private Date createTime;
-    
+
     private Date updateTime;
 
     public String getUserName() {
@@ -92,8 +111,8 @@ public class UserVo implements Serializable{
         this.updateTime = updateTime;
     }
 
-    //表格列编辑使用
-    public static SysUser toColumnEditUser(UserVo vo){
+    // 表格列编辑使用
+    public static SysUser toColumnEditUser(UserVo vo) {
         SysUser user = new SysUser();
         user.setId(vo.getUserId());
         user.setRealName(vo.getRealName());

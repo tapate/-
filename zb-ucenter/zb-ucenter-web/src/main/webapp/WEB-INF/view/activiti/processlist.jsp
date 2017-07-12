@@ -3,62 +3,86 @@
 
 <!DOCTYPE>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="renderer" content="webkit">
     <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
     
     <title>已部署的工作流列表</title>
-	
+    
     <!-- 静态css、js资源 -->
     <%@ include file="/WEB-INF/view/common/common.jsp"%>
-    
     <script type="text/javascript" src="${ctx}/resources/js/activiti/processlist.js"></script>
+    
+    <style type="text/css">
+        .float_left_l {
+            float : left;
+            display: inline;
+            padding-top: 10px;
+        }
+        .float_left_i {
+            float : left;
+            display: inline;
+            margin-left: 20px;
+        }
+        .float_left_r{
+            padding-top: 10px;
+            margin-left: 30px;
+            float: left;
+        }
+        
+        /*当查询数据为空的时候，让提示信息居中显示，覆盖yui默认的td左对齐样式*/
+        .table td{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<!-- 删除工作流实例url -->
-<input type="hidden" name="deleteUserUrl" id="deleteProcessUrl" value="<c:url value="/activiti/deleteProcess"/>" />
-<!-- 获取已部署的工作流列表url -->
-<input type="hidden" name="getProcessListUrl" id="getProcessListUrl" value="<c:url value="/activiti/processList"/>" />
-<!-- 查看文件内容url -->
-<input type="hidden" name="showProcessResourceUrl" id="showProcessResourceUrl" value="<c:url value="/activiti/showProcessResource"/>" />
-    
-<div class="wrapper wrapper-content animated fadeInRight " id="processListDiv" style="width: 100%; height: 100%;">
-    <div class="ibox">
-        <div class="ibox-content">
-            <!-- 
-            <form class="form-horizontal" id="processSearchForm" method="post" onsubmit="return false">
-                <div class="ibox-title">
-                    <button type="button" class="btn btn-primary" id="processSearchButton">查询</button>
-                </div>
-                <br />
-                <div class="row">
-                </div>
-            </form>
-            -->
-             
-            <div class="row">
-                <div class="col-md-5 col-lg-5">
-                    <form id="upload" action="<c:url value="/activiti/uploadWorkFlow"/>" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="fileupload">上传流程定义文件（请上传 .bpmn 类型文件）</label> 
-                            <input type="file" name="uploadFile" class="form-control" id="fileupload">
-                        </div>
-                        <button type="submit" class="btn btn-primary">开始上传</button>
-                    </form>
-                </div>
-            </div>
-            <br/>
-            <br/>
-            <div class="row">
-                <!-- 表格 -->
-                <div class="col-md-10 col-lg-10">
-                    <table class="table table-bordered table-hover" id="processListTable"></table>
-                </div>
-            </div>
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> activiti工作流管理 <span class="c-gray en">&gt;</span> 已部署的工作流列表
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新选项卡" ><i class="Hui-iconfont">&#xe68f;</i></a> 
+        <!-- <a class="btn btn-danger radius r" style="line-height:1.6em;margin-top:3px;margin-right: 10px;" href="javascript:removeIframe();" title="关闭选项卡" ><i class="Hui-iconfont">&#xe6a6;</i></a> -->
+    </nav>
+    <div class="page-container">
+        <div class="f-14 c-green">上传流程定义文件（请上传 *.bpmn 类型文件）</div>
+        <div class="text-l" style="margin-top: 10px;">
+	        <form id="upload" class="Huiform" method="post" action="${ctx}/activiti/uploadWorkFlow" target="_self" enctype="multipart/form-data">
+	            <span class="btn-upload form-group">
+	               <input class="input-text upload-url" type="text" name="uploadfile-2" id="uploadfile-2" readonly="" style="width:200px">
+	               <a href="javascript:void();" class="btn btn-primary upload-btn"><i class="Hui-iconfont"> &#xe695;</i> 选择文件（*.bpmn）</a>
+	               <input type="file" name="uploadFile"  id="fileupload" class="input-file" accept=".bpmn">
+	            </span>
+	            <button type="submit" class="btn btn-success"><i class="Hui-iconfont">&#xe642;</i> 上传</button>
+	        </form>
+	    </div>
+	    <hr style="margin-top: 30px;border-style: solid;border-color: rgb(222, 222, 222);border-width: 1px;"/>
+        <div class="mt-20" style="margin-top: 30px;">
+            <table id="processListTable" class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="80">ID</th>
+                        <th>DeploymentId</th>
+                        <th>name</th>
+                        <th>ResourceName</th>
+                        <th>diagramResourceName</th>
+                        <th>key</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
-
+    
+	<input des="删除工作流实例url" type="hidden" name="deleteUserUrl" id="deleteProcessUrl" value="${ctx}/activiti/deleteProcess" />
+	<input des="获取已部署的工作流列表url" type="hidden" name="getProcessListUrl" id="getProcessListUrl" value="${ctx}/activiti/processList" />
+	<input des="查看文件内容url" type="hidden" name="showProcessResourceUrl" id="showProcessResourceUrl" value="${ctx}/activiti/showProcessResource" />
+    <input type="hidden" des="项目根路径" name="basePathUrl" id="basePathUrl" value="${ctx}" />
+    
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="${ctx}/resources/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+    <script type="text/javascript" src="${ctx}/resources/lib/laypage/1.2/laypage.js"></script>
 </body>
 </html>

@@ -124,27 +124,23 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         int total = query.list().size();
         List<ProcessInstance> processInstanceList = query.listPage(pager.getOffset(), pager.getLimit());
         
-        List<LeaveApplyVo> list = null;
+        List<LeaveApplyVo> list = new ArrayList<LeaveApplyVo>();
         for (ProcessInstance processInstance : processInstanceList) {
-            // 初始化集合大小
-            if (list == null) {
-                list = new ArrayList<LeaveApplyVo>();
-            }
-            
             //根据业务key获取请假申请记录。在该流程中，业务key其实就是请假申请记录的id
             LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(processInstance.getBusinessKey()));
-            
-            //将请假记录中的申请人id与当前登录的人id进行对比，判断是否属于自己的请假申请
-            if(leaveApply.getUserId().longValue() == leaveApplyQo.getUserId().longValue()){
-                Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-                
-                LeaveApplyVo vo = new LeaveApplyVo();
-                vo.setActivityId(processInstance.getActivityId());
-                vo.setName(task.getName());
-                vo.setBusinessKey(processInstance.getBusinessKey());
-                vo.setExecutionId(processInstance.getId());
-                vo.setProcessInstanceId(processInstance.getProcessInstanceId());
-                list.add(vo);
+            if(leaveApply != null){
+                //将请假记录中的申请人id与当前登录的人id进行对比，判断是否属于自己的请假申请
+                if(leaveApply.getUserId().longValue() == leaveApplyQo.getUserId().longValue()){
+                    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+                    
+                    LeaveApplyVo vo = new LeaveApplyVo();
+                    vo.setActivityId(processInstance.getActivityId());
+                    vo.setName(task.getName());
+                    vo.setBusinessKey(processInstance.getBusinessKey());
+                    vo.setExecutionId(processInstance.getId());
+                    vo.setProcessInstanceId(processInstance.getProcessInstanceId());
+                    list.add(vo);
+                }
             }
         }
         pager.setTotal(Long.parseLong(String.valueOf(total)));
@@ -193,12 +189,8 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         
         List<Task> deptPagerTasks = query.listPage(pager.getOffset(), pager.getLimit());//分页数据
         
-        List<DeptLeaderAuditVo> list = null;
+        List<DeptLeaderAuditVo> list = new ArrayList<DeptLeaderAuditVo>();
         for(Task task : deptPagerTasks){
-            if (list == null) {// 初始化集合大小
-                list = new ArrayList<DeptLeaderAuditVo>();
-            }
-            
             /** 获取请假相关数据 */
             String processInstanceId = task.getProcessInstanceId();//流程实例ID
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -286,11 +278,8 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         List<Task> tasks = query.list();//所有任务
         List<Task> pagerTasks = query.listPage(pager.getOffset(), pager.getLimit());//分页
         
-        List<DeptLeaderAuditVo> list = null;
+        List<DeptLeaderAuditVo> list = new ArrayList<DeptLeaderAuditVo>();
         for(Task task : pagerTasks){
-            if(list == null){//初始化集合
-                list = new ArrayList<DeptLeaderAuditVo>();
-            }
             String processInstanceId = task.getProcessInstanceId();//流程实例ID
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();//获取流程实例
             
@@ -365,12 +354,8 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         
         List<HistoricProcessInstance> historicProcessInstanceList = query.listPage(pager.getOffset(), pager.getLimit());
         
-        List<LeaveApplyHistoryVo> list = null;
+        List<LeaveApplyHistoryVo> list = new ArrayList<LeaveApplyHistoryVo>();
         for (HistoricProcessInstance historicProcessInstance : historicProcessInstanceList) {
-            // 初始化集合大小
-            if (list == null) {
-                list = new ArrayList<LeaveApplyHistoryVo>();
-            }
             //根据业务key获取请假申请记录。在该流程中，业务key其实就是请假申请记录的id
             LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(historicProcessInstance.getBusinessKey()));
             SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
@@ -412,12 +397,8 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         
         List<Task> deptPagerTasks = query.listPage(pager.getOffset(), pager.getLimit());//分页数据
         
-        List<HrAuditVo> list = null;
+        List<HrAuditVo> list = new ArrayList<HrAuditVo>();
         for(Task task : deptPagerTasks){
-            if (list == null) {// 初始化集合大小
-                list = new ArrayList<HrAuditVo>();
-            }
-            
             /** 获取请假相关数据 */
             String processInstanceId = task.getProcessInstanceId();//流程实例ID
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();

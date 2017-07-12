@@ -1,26 +1,70 @@
 $(function(){
-    formValidate("permissionEditForm",{
-        name:{
-            required: true,
-            maxlength:20
+	    $("#form-permission-edit").validate({
+        rules:{
+        	name:{
+                required:true
             },
-        description:{
-            required: true,
-            maxlength:50
+            description:{
+                required:true
+            },
+            code:{
+                required:true
+            }
         },
-        code:{
-            required: true,
-            maxlength:50
+        messages: {
+        	name: "请输入权限名称",
+        	description: "请输入权限描述",
+        	code: "请输入权限代码"
         },
-        status:{
-            required: true
+        onkeyup:false,
+        focusCleanup:true,
+        success:"",
+        submitHandler:function(form){
+        	var parentId = $("#parentId").val();
+            if(parentId == null || parentId == ""){
+                layer.msg("请选择权限所属层级", {
+                    shift: 2,
+                    icon: 5
+                });
+                return false;
+            }
+        	var options = {
+                type: $(form).attr("method"),
+                url: $(form).attr("action"),
+                success : formResponse,
+                dataType: 'json',  
+                error : function(xhr, status, err) {
+                }  
+            };   
+            $(form).ajaxSubmit(options);
         }
     });
 });
 
 
-
-
+/*表单回调函数*/
+function formResponse(responseText, statusText){
+    if(responseText.code == 200){
+        layer.msg("添加成功,2秒后自动关闭窗口", {
+            shift: 2,
+            time : 2000,
+            icon: 6
+        },function(){
+        	//关闭弹出框
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+        
+        $("#searchBtn", parent.document).click();
+    }else{
+        layer.msg(responseText.msg, {
+            shift: 2,
+            icon: 5
+        });
+        return false;
+    }
+}
+ 
 function checkPermission() {
     var zTree = $.fn.zTree.getZTreeObj("permissionTree"), 
     type = {"Y" : "ps","N" : "s"};
@@ -38,20 +82,19 @@ $(document).ready(function() {
             }
         },
         callback : {
-            onClick : function(event, treeId, treeNode){//节点被点击后，设置选择的节点id
-                $("#permissionUpdateDiv #parentId").val(treeNode.id);
+        	onClick : function(event, treeId, treeNode){//节点被点击后，设置选择的节点id
+            	$("#parentId").val(treeNode.id);
             }
         }
     };
-    var permissions = $("input[name='permissions']").val();
-    $.fn.zTree.init($("#permissionUpdateDiv #permissionTree"), setting, eval("(" + permissions + ")"));
+    var roles = $("input[name='permissions']").val();
+    $.fn.zTree.init($("#permissionTree"), setting, eval("(" + roles + ")"));
     checkPermission();
-    
     
     //默认选中权限的父亲节点
     var treeObj = $.fn.zTree.getZTreeObj("permissionTree");
 	var nodes = treeObj.getCheckedNodes(false);
-	var parentId = $("#permissionUpdateDiv #parentId").val();
+	var parentId = $("#parentId").val();
 	if (nodes.length>0) {
 		for(var i = 0; i < nodes.length; i++){
 			if(nodes[i].id == parentId){
@@ -61,70 +104,3 @@ $(document).ready(function() {
 		}
 	}
 });
-
-// 验证是否选择了权限
-function check_param() {
-    var numberval = 0;
-    var treePermission = $.fn.zTree.getZTreeObj("permissionTree"), 
-        permissions = treePermission.getCheckedNodes(true), 
-        pmss = "";
-    if (permissions.length > 0) {
-        for (var i = 0; i < permissions.length; i++) {
-            pmss += permissions[i].id + ",";
-        }
-        if (pmss.length > 0) {
-            pmss = pmss.substring(0, pmss.length - 1);
-        }
-        $("#permissionUpdateDiv #permissionIds").val(pmss);
-    } else {
-        numberval++;
-    }
-    if (numberval > 0) {
-        return false;
-    }
-    return true;
-}
-
-
-//提交
-function permissionSubmitForm(parentIndex){
-	var parentId = $("#permissionUpdateDiv #parentId").val();
-    if(parentId == null || parentId == ""){
-        alertMsg("请选择权限所属层级",0);
-        return false;
-    }
-    
-    var s=$("#permissionUpdateDiv #permissionEditForm").validate().form();
-    if(s){
-        $.ajax({
-            type : "post",
-            url : $("#permissionUpdateDiv #updatePermissionUrl").val(),
-            data : {
-            	"name" : $("#permissionUpdateDiv #name").val(),
-            	"code" : $("#permissionUpdateDiv #code").val(),
-            	"status" : $("#permissionUpdateDiv #status").val(),
-            	"description" : $("#permissionUpdateDiv #description").val(),
-            	"id" : $("#permissionUpdateDiv #permissionId").val(),
-            	"parentId" : $("#permissionUpdateDiv #parentId").val()
-            },
-            dataType : "json",
-            success : function(data) {
-                if(data.code == 200){
-                	layer.msg('更新成功', {
-                        shift: 2,
-                        icon: 6
-                    });
-                	closeMsg(parentIndex);
-                	
-                	$('#permissionListTable').bootstrapTable("refresh");
-                }else{
-                	layer.msg(data.msg, {
-                        shift: 2,
-                        icon: 5
-                    });
-                    closeMsg(parentIndex);
-                }
-            }
-        });
-    }
-}

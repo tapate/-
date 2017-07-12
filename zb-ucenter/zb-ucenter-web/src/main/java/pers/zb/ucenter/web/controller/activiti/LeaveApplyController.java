@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pers.zb.common.util.AjaxResult;
+import pers.zb.common.util.JQDatatableResult;
 import pers.zb.common.util.Pager;
 import pers.zb.common.util.enums.activiti.ApprovalOpinion;
 import pers.zb.common.util.enums.activiti.LeaveType;
@@ -196,7 +197,7 @@ public class LeaveApplyController {
      */
     @RequestMapping("/myLeaveApplyList")
     @ResponseBody
-    public Object myLeaveApplyList(Pager<LeaveApplyVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+    public JQDatatableResult<LeaveApplyVo> myLeaveApplyList(Pager<LeaveApplyVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
         // 获取当前登录用户
         Subject currentUser = SecurityUtils.getSubject();// 登录对象
         SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
@@ -205,7 +206,13 @@ public class LeaveApplyController {
         logger.debug("获取我发起的请假流程列表，leaveApplyQo:" + JsonUtil.toJson(leaveApplyQo));
         
         pager = leaveApplyService.getMyLeaveApplyList(pager, leaveApplyQo);
-        return pager;
+        
+        JQDatatableResult<LeaveApplyVo> result = new JQDatatableResult<LeaveApplyVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     
@@ -278,7 +285,7 @@ public class LeaveApplyController {
      */
     @RequestMapping("/deptleader/auditlist")
     @ResponseBody
-    public Object getDeptLeaderAuditList(Pager<DeptLeaderAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+    public JQDatatableResult<DeptLeaderAuditVo> getDeptLeaderAuditList(Pager<DeptLeaderAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
         // 获取当前登录用户
         Subject currentUser = SecurityUtils.getSubject();// 登录对象
         SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
@@ -287,7 +294,13 @@ public class LeaveApplyController {
         logger.debug("获取部门领导需要审批的请假流程列表，leaveApplyQo:" + JsonUtil.toJson(leaveApplyQo));
         
         pager = leaveApplyService.getDeptLeaderAuditList(pager, leaveApplyQo);
-        return pager;
+        
+        JQDatatableResult<DeptLeaderAuditVo> result = new JQDatatableResult<DeptLeaderAuditVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     /**
@@ -377,7 +390,7 @@ public class LeaveApplyController {
      */
     @RequestMapping("/hr/auditlist")
     @ResponseBody
-    public Object getHrAuditList(Pager<HrAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+    public JQDatatableResult<HrAuditVo> getHrAuditList(Pager<HrAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
         // 获取当前登录用户
         Subject currentUser = SecurityUtils.getSubject();// 登录对象
         SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
@@ -386,7 +399,13 @@ public class LeaveApplyController {
         logger.debug("获取人事需要审批的请假流程列表，leaveApplyQo:" + JsonUtil.toJson(leaveApplyQo));
         
         pager = leaveApplyService.getHrAuditList(pager, leaveApplyQo);
-        return pager;
+        
+        JQDatatableResult<HrAuditVo> result = new JQDatatableResult<HrAuditVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     
@@ -480,7 +499,7 @@ public class LeaveApplyController {
      */
     @RequestMapping("/leaveapply/turndown/list")
     @ResponseBody
-    public Object leaveApplyTurndownList(Pager<DeptLeaderAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+    public JQDatatableResult<DeptLeaderAuditVo> leaveApplyTurndownList(Pager<DeptLeaderAuditVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
         // 获取当前登录用户
         Subject currentUser = SecurityUtils.getSubject();// 登录对象
         SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
@@ -489,7 +508,13 @@ public class LeaveApplyController {
         logger.debug("获取被驳回需要重新调整的请假申请列表，leaveApplyQo:" + JsonUtil.toJson(leaveApplyQo));
         
         pager = leaveApplyService.getLeaveApplyTurndownList(pager, leaveApplyQo);
-        return pager;
+        
+        JQDatatableResult<DeptLeaderAuditVo> result = new JQDatatableResult<DeptLeaderAuditVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     
@@ -570,7 +595,7 @@ public class LeaveApplyController {
      */
     @RequestMapping("/leaveapply/history/list")
     @ResponseBody
-    public Object leaveApplyHistoryList(Pager<LeaveApplyHistoryVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
+    public JQDatatableResult<LeaveApplyHistoryVo> leaveApplyHistoryList(Pager<LeaveApplyHistoryVo> pager, LeaveApplyQo leaveApplyQo) throws Exception {
         // 获取当前登录用户
         Subject currentUser = SecurityUtils.getSubject();// 登录对象
         SysUser user = userService.getUserByName(String.valueOf(currentUser.getPrincipal()));
@@ -579,7 +604,13 @@ public class LeaveApplyController {
         logger.debug("获取我的请假历史列表，leaveApplyQo:" + JsonUtil.toJson(leaveApplyQo));
         
         pager = leaveApplyService.getLeaveApplyHistoryList(pager, leaveApplyQo);
-        return pager;
+        
+        JQDatatableResult<LeaveApplyHistoryVo> result = new JQDatatableResult<LeaveApplyHistoryVo>();
+        result.setData(pager.getRows());
+        result.setRecordsTotal(pager.getTotal().intValue());
+        result.setDraw(pager.getDraw());
+        result.setRecordsFiltered(pager.getTotal().intValue());
+        return result;
     }
     
     /**

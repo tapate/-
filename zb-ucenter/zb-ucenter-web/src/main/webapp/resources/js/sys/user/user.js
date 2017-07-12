@@ -1,259 +1,295 @@
-$(function() {
-	var haveUserEditPermission = $("#haveUserEditPermission").val();
-	var haveUserDeletePermission = $("#haveUserDeletePermission").val();
-	$("#userListTable").bootstrapTable({
-		contentType: "application/x-www-form-urlencoded",
-		url : $("#getUserListUrl").val(),
-		height:500,
-		method: "post",//请求方式
-        pagination: true, //启动分页  
-        pageSize: 10,  //每页显示的记录数 
-        pageList: [5, 10, 15,20,30,50],
-        sidePagination: "server", //表示服务端请求
-        cache: false, // 不缓存
-        showColumns: true,//列选择按钮
-        buttonsAlign: "left",//按钮对齐方式
-        toolbarAlign: "right",//工具栏对齐方式
-        toolbar: '#toolbar',    //工具按钮用哪个容器
-       	//detailView: true,
-    	//dataType: "jsonp",
-    	idField: "userId",  //标识哪个字段为id主键  
-    	//showRefresh: true,  //显示刷新按钮
-    	//singleSelect: true,//复选框只能选择一条记录  
-    	clickToSelect: false,//点击行即可选中单选/复选框  
-    	showExport: true,//是否显示导出
-    	exportDataType: "basic",//basic', 'all', 'selected'.
-		queryParams : function(params) {
-			params['roleId'] = $("#userSearchForm #roleId").val();
-			params['status'] = $("#userSearchForm #status").val();
-			params['realName'] = $("#userSearchForm #realName").val();
-			params['haveUserListPermission'] = $("#userSearchForm #haveUserListPermission").val();
-			return params;
-		},
-		columns : [{
-			field : 'state',
-            checkbox: true
-        },
-		{
-			field : '',
-			title : '序号',
-			align : 'center',
-			formatter : function(value, row, index) {
-				return index + 1;
-			}
-		},{
-			field : 'realName',
-			title : '真实姓名',
-			align : 'center',
-			titleTooltip: "名称可以直接点击编辑哦",
-			editable:true
-		},{
-			field : 'userName',
-			title : '账户名',
-			align : 'center'
-		},
-		{
-			field : 'roleName',
-			title : '拥有角色',
-			align : 'center'
-		},
-		{
-			field : 'statusName',
-			title : '允许登录',
-			align : 'center'
-		},
-		{
-			field : 'createTime',
-			title : '创建日期',
-			sortable: true,
-			align : 'center'
-		},
-		{
-			field : 'userId',
-			title : '操作',
-			align : 'center',
-			formatter : function(value, row, index) {
-				var str = "";
-				if(haveUserEditPermission){
-					//if(row["roleName"] == "超级管理员"){
-						//str += "<button onclick=\"javascript:editUser(" + value + ")\" type=\"button\" disabled=\"disabled\" class=\"btn btn-success\" id=\"editButton\">编辑</button>";
-					//}else{
-						str += "<button onclick=\"javascript:editUser(" + value + ")\" type=\"button\" class=\"btn btn-success\" id=\"editButton\">编辑</button>";
-					//}
-				}
-				if(haveUserDeletePermission){
-					//是管理员，则灰化删除按钮
-					if(row["roleName"] == "超级管理员"){
-						str += "&nbsp;&nbsp;<button onclick=\"javascript:deleteUser(" + value + ")\" type=\"button\" disabled=\"disabled\" class=\"btn btn-warning\">删除</button>";
-					}else{
-						str += "&nbsp;&nbsp;<button onclick=\"javascript:deleteUser(" + value + ")\" type=\"button\" class=\"btn btn-warning\" id=\"deleteButton\">删除</button>";
-					}
-					
-				}
-				return str;
-			}
-		}],
-		
-		//表格加载数据自定义提示信息
-		formatLoadingMessage: function () {  
-		    return "数据正在努力加载中...";  
-		},
-		
-		//没有匹配的结果自定义提示信息
-		formatNoMatches: function () {  //没有匹配的结果  
-		    return "无符合条件的记录";  
-		},
-		
-		//加载出现错误
-		onLoadError: function (data) {  
-		    //$('#userListTable').bootstrapTable('removeAll');  
-		},
-		
-		//单击某一行
-		//onClickRow: function (row) {  
-		    //alert("选中了人员姓名是【" + row["realName"] + "】的一条记录");
-		//},
-		  
-		//列编辑。四个参数field, row, oldValue, $el分别对应着当前列的名称、当前行数据对象、更新前的值、编辑的当前单元格的jQuery对象
-		onEditableSave: function (field, row, oldValue, $el) {
-			//console.log(field);
-			//console.log(JSON.stringify(row));
-			//console.log(oldValue);
-			
-			//这里声明一个对象，用于存储参数集合，实现编辑列的动态属性名与值的对应。field比较重要特殊，是一个变量：具体修改的参数名称，比如realName。
-			var data = {};
-			data[field]=row[field];
-			data["userId"] = row["userId"];
-			
+var table;
+$(function () {
+    //==================初始化表格===================
+    //dom自定义布局属性：
+    //    Dom说明
+			/*
+				定义表格控件在页面的显示顺序。
+				每个控件元素在数据表都有一个关联的单个字母。
+				l - 每页显示行数的控件
+				f - 检索条件的控件
+				t - 表格控件
+				i - 表信息总结的控件
+				p - 分页控件
+				r - 处理中的控件
+				还可以在控件元素外添加DIV和Class，语法如下
+				< and > - DIV元素
+				<"class" and > - DIV和Class
+				<"#id" and > - DIV和ID
+			*/
+    table = $(".table-sort").dataTable({
+    	dom: '<"top">t<"float_left_l"l><"float_left_i"i><"float_left_r"r>p<"clear">',//设置排版规则(提示语、分页、搜索、页数分组等的位置设置)
+        language:lang,  //提示信息
+        aLengthMenu: [5,10,15,20,50],
+        autoWidth: false,  //自动调整列宽
+        filter: true, //查询结果搜索栏
+        destroy : true,
+        bSort : true,
+        processing: false,  //加载提示
+        serverSide: true,  //服务器端分页
+        orderMulti: false,  //启用多列排序
+        order: [],  //取消默认排序查询,否则复选框一列会出现小箭头
+        pagingType: "full_numbers",  //分页样式：simple,simple_numbers,full,full_numbers
+        stateSave: false,//状态保存 - 再次加载页面时还原表格状态
+        deferRender : true,//控制表格的延迟渲染，可以提高初始化的速度。
+        ajax: function (data, callback, settings) {
+        	var param = {};
+            //封装请求参数
+            param.draw = data.draw;
+           	param.start = data.start;//开始的记录序号
+           	param.page = (data.start / data.length)+1;//当前页码
+            param.limit = data.length;//页面显示记录条数，在页面显示每页显示多少项的时候
+            param.roleId = $("#roleId").val();
+            param.status = $("#status").val();
+            param.realName = $("#realName").val();
+            //设置排序参数
+            if(data.order.length > 0){
+            	param.order = data.order[0].dir;//排序方式
+                param.sort = data.columns[data.order[0].column].name;//排序字段名
+            }
+            //ajax请求数据
             $.ajax({
-                type: "post",
-                dataType : "json",
-                url: $("#editColumnUrl").val(),
-                data: data,
-                beforeSend : function(){
-                	ZENG.msgbox.show("正在请求系统...", 6);
+                type: "POST",
+                url: $("#getUserListUrl").val(),
+                cache: false,  //禁用缓存
+                data: param,  //传入组装的参数
+                dataType: "json",
+                timeout:10000,
+                beforeSend: function(){//请求之前显示loading效果
+                	$(".dataTable tr:gt(0)").remove();
+                    $(".dataTable thead").append("<tr style='line-height:38px;'><td style='text-align:center;' colspan='9'></td></tr>");
+                    $(".dataTable tr:eq(1) td").html("<img src='" + $("#basePathUrl").val() + "/resources/images/loading.gif'/><span style='margin-left:5px;vertical-align:middle;'>数据加载中...</span>");
                 },
-                success: function (data) {
-                    if (data.code == 200) {
-                    	ZENG.msgbox.show("保存成功", 4, 2000);
+                success: function (result) {
+                	$(".dataTable tr:gt(0)").remove();//移除loading
+                    
+                	//封装返回数据
+                    var returnData = {};
+                    returnData.draw = data.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                    returnData.recordsTotal = result.recordsTotal;//返回数据全部记录
+                    returnData.recordsFiltered = result.recordsFiltered;//后台不实现过滤功能，每次查询均视作全部结果
+                    returnData.data = result.data;//返回的数据列表
+                    callback(returnData);
+                },
+                error:function(jqXHR, textStatus, errorThrown){
+                	$(".dataTable tr:gt(0)").remove();
+                    $(".dataTable thead").append("<tr style='line-height:38px;'><td style='text-align:center;' colspan='9'></td></tr>");
+                    if(textStatus=="timeout"){  
+                        $(".dataTable tr:eq(1) td").html("<span style='margin-left:5px;vertical-align:middle;color:red;'>请求数据超时，稍后请刷新重试</span>"); 
                     }else{
-                    	ZENG.msgbox.show(data.msg, 4, 2000);
+                        console.log("其他状态:" + textStatus);
+                        $(".dataTable tr:eq(1) td").html("<span style='margin-left:5px;vertical-align:middle;color:red;'>请求数据异常，稍后请刷新重试</span>");
                     }
                 },
-                
-                //textStatus的值：null, timeout, error, abort, parsererror  
-                //errorThrown的值：收到http出错文本，如 Not Found 或 Internal Server Error.
-                error: function (XMLHttpRequest, textStatus, errorThrown) {  
-                	ZENG.msgbox.show("系统发生错误", 5, 2000);
+            });
+        },
+        
+        
+        //列表表头字段 //visible:是否显示该列，bSortable：是否排序
+        //这里的name属性有特别的作用，用于映射数据库对应的字段名。
+        //      比如statusName为枚举的值，但数据库对应的字段为status，所以上面在设置请求排序参数的时候，应该获取的是name值，而不是data属性值。
+        columns: [
+            { "data": "userId" , "bSortable": false ,width : "5%"},
+            { "data": "userId" , "bSortable": true , name : "id" , width : "5%"},
+            { "data": "userName" , "bSortable": false, width : "10%"},
+            { "data": "realName" , "bSortable": false , "visible": true, width : "10%"},
+            { "data": "roleName" , "bSortable": false, width : "10%"},
+            { "data": "fromSystemName" , "bSortable": false, name : "fromSystem", width : "15%"},
+            { "data": "statusName" , name : "status", width : "10%"},
+            { "data": "createTime" , name : "createTime", width : "15%"},
+            { "data": "updateTime" , name : "updateTime", width : "15%"}
+        ],
+        
+        //targets：表示具体需要操作的目标列，下标从0开始
+        //data: 表示我们需要的某一列数据对应的属性名
+        //render:返回需要显示的内容。在此我们可以修改列中样式，增加具体内容
+        "columnDefs": [
+			{
+			    "targets": [0],
+			    "data": "userId",
+			    "render": function(data, type, full) {
+			         return '<input type="checkbox" value="' + data + '" id="user_chbox_"' + data + ' /> ';
+			    }
+			},
+            {
+                "targets": [2],
+                "data": "userName",
+                "render": function(data, type, full) {
+                     return "<a style='text-decoration: underline;' onClick=\"userEdit('编辑用户信息','" + $("#toEditUserUrl").val() + "?userId=" + full.userId + "','','','510')\" href=\"javascript:;\">" + data + "</a>";
+                }
+            },
+            {
+                "targets": [6],
+                "data": "status",
+                "render": function(data, type, full) {
+                	if(full.status == "ENABLE"){
+                		return "<span class=\"label label-success radius\">" + full.statusName + "</span>";
+                	}else if(full.status == "DISABLE"){
+                		return "<span class=\"label label-danger radius\">" + full.statusName + "</span>";
+                	}else if(full.status == "LOCK"){
+                        return "<span class=\"label label-warning radius\">" + full.statusName + "</span>";
+                    }
+                    return data + "";
+                }
+            },
+            {
+                "targets": [9],
+                "data": "userId",
+                "render": function(data, type, full) {
+                	return "<a style=\"text-decoration:none\" class=\"ml-5\" onClick=\"userEdit('编辑用户信息','" + $("#toEditUserUrl").val() + "?userId=" + data + "','','','510')\" href=\"javascript:;\" title=\"编辑用户信息\"><i class=\"Hui-iconfont\">&#xe6df;</i></a>"
+                             + "<a style=\"text-decoration:none;margin-left:15px;\" class=\"ml-5\" onClick=\"userDelete('" + data + "')\" href=\"javascript:;\" title=\"删除\"><i class=\"Hui-iconfont\">&#xe6e2;</i></a>";
+                }
+            }
+        ],
+        
+        //创建行的回调
+        createdRow : function(row, data, dataIndex){
+        	$(row).children('td').attr('style', 'text-align: center;');//设置表格列居中显示
+        	//$(row).unbind("mouseenter").unbind("mouseleave");
+        	
+        	if(data.status == "DISABLE"){
+        		$(row).children('td').addClass("tr_disable_color");
+        	}else if(data.status == "LOCK"){
+                $(row).children('td').addClass("tr_lock_color");
+            }
+        },
+        
+        //表格初始化完毕的回调
+        initComplete: function(oSettings, json) { 
+        }
+    }).api();
+    //此处需调用api()方法,否则返回的是JQuery对象而不是DataTables的API对象
+    
+    $("#searchBtn").click(function (){
+    	table.draw();
+    });
+});
+
+//复选框选中事件处理。(全选复选框事件无须写代码，yui框架已经自动处理事件)
+$('#userListTable tbody').on('change', 'input[type="checkbox"]', function(){
+	//如果取消选中，则设置全选为非选中状态
+    if(!this.checked){
+        var el = $('#selectAll').get(0);
+        if(el && el.checked){
+            el.checked = false;
+        }
+    }else{//选中复选框，判断是否全部选择，设置全选复选框状态
+    	var checkAll = $("#userListTable tbody input[type='checkbox']");//获取当前页所有复选框
+    	var checkSel = $("#userListTable tbody input[type='checkbox']:checked");//获取当前页选中的复选框
+        if(checkAll.length == checkSel.length){
+        	$('#selectAll').prop("checked",true);
+        }else{
+        	$('#selectAll').prop("checked",false);
+        }
+    }
+});
+/* 用户-添加*/
+function userAdd(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+
+/*用户-编辑*/
+function userEdit(title,url,id,w,h){
+	var haveUserEditPermission = $("#haveUserEditPermission").val();
+	if(haveUserEditPermission != undefined && haveUserEditPermission != ""){
+		layer_show(title,url,w,h);
+	}else{
+		layer.msg("您暂无用户修改权限", {
+            shift: 2,
+            icon: 5
+        });
+	}
+}
+
+//批量删除用户
+function batchDeleteUser(){
+	var checks = $("#userListTable tbody input[type='checkbox']:checked");//获取当前页所有复选框
+	var userIdStr = "";
+	for(var i = 0; i < checks.length; i++){
+		var uid = $(checks[i]).val();
+		userIdStr += uid;
+		if(i < checks.length - 1){
+			userIdStr += ",";
+		}
+	}
+	if(userIdStr == ""){
+		layer.msg("请选择用户", {
+            shift: 2,
+            icon: 7
+        });
+		return;
+	}
+	$.confirm({
+        icon: '',
+        content: '确定删除选中的用户？',
+        confirm: function(){
+            $.ajax({
+                type : "post",
+                url : $("#deleteUsersUrl").val(),
+                dataType : "json",
+                data : {
+                    "userIdArr" : userIdStr
+                },
+                success : function(result) {
+                    if (result.code == 200) {
+                        layer.msg('删除成功', {
+                            shift : 2,
+                            icon : 6
+                        });
+                        table.draw();
+                    } else {
+                        layer.msg(result.msg, {
+                            shift : 2,
+                            icon : 5
+                        });
+                    }
                 }
             });
+        },
+        cancel: function(){
         }
-	});
-
-	// 查询
-	$("#userSearchButton").click(function() {
-		$('#userListTable').bootstrapTable("refresh");
-	});
-
-	// 打开添加人员页面
-	$("#userAddButton").click(function() {
-		openWindows("添加用户", $("#toAddUserUrl").val(), null, 
-			function(index, layero) {
-				userSubmitForm(index);
-			}
-		);
-	});
-});
-
-
-/*var $table = $('#userListTable');
-$(function () {
-    $('#toolbar').find('select').change(function () {
-        $table.bootstrapTable('destroy').bootstrapTable({
-            exportDataType: $(this).val()
-        });
     });
-});*/
-
-
-/**
- * 设置表格行背景色 pink是页面中head内的css样式
- * 
- * @param row
- * @param index
- * @returns
- */
-function rowStyle(row, index) {
-	//var classes = [ "danger" ];//可以自定义css样式
 	
-	//bootstrap table支持5中表格的行背景色，分别是'active', 'success', 'info', 'warning', 'danger'这五种
-	if (row["statusName"] == "禁用") {
-		return {
-			classes : "danger" //自定义样式可以这样使用 ： classes[0]，获取对应的颜色样式
-		};
+}
+
+/*用户-删除*/
+function userDelete(userId){
+	var haveUserDeletePermission = $("#haveUserDeletePermission").val();
+	if(haveUserDeletePermission != undefined && haveUserDeletePermission != ""){
+		$.confirm({
+	        icon: '',
+	        content: '确定删除该用户信息？',
+	        confirm: function(){
+	            $.ajax({
+	                type : "post",
+	                url : $("#deleteUserUrl").val(),
+	                dataType : "json",
+	                data : {
+	                    "userId" : userId
+	                },
+	                success : function(result) {
+	                    if (result.code == 200) {
+	                        layer.msg('删除成功', {
+	                            shift : 2,
+	                            icon : 6
+	                        });
+	                        table.draw();
+	                    } else {
+	                        layer.msg(result.msg, {
+	                            shift : 2,
+	                            icon : 5
+	                        });
+	                    }
+	                }
+	            });
+	        },
+	        cancel: function(){
+	        }
+	    });
+	}else{
+		layer.msg("您暂无用户删除权限", {
+            shift: 2,
+            icon: 5
+        });
 	}
-	return {};
-}
-
-$(document).ready(function() {
-	var setting = {
-		check : {
-			enable : false
-		},
-		data : {
-			simpleData : {
-				enable : true
-			}
-		},
-		callback : {
-			onClick : function(event, treeId, treeNode) {// 节点被点击后，设置选择的节点id
-				$("#depId").val(treeNode.id);
-
-				$("#userSearchButton").click();
-			}
-		}
-	};
-	var depList = $("input[name='depList']").val();
-	// $.fn.zTree.init($("#depTree"), setting, eval("(" + depList + ")"));
-});
-
-function editUser(value) {
-	openWindows("编辑人员信息", $("#toEditUserUrl").val(), {userId : value}, 
-		function(index, layero) {
-			userSubmitForm(index);
-		}
-	);
-}
-
-function deleteUser(value) {
-	$.confirm({
-	    icon: 'fa fa-warning',
-	    content: '是否永久删除该人员？',
-	    confirm: function(){
-	    	$.ajax({
-				type : "post",
-				url : $("#userListDiv #deleteUserUrl").val(),
-				dataType : "json",
-				data : {
-					"userId" : value
-				},
-				success : function(result) {
-					if (result.code == 200) {
-						layer.msg('删除成功', {
-							shift : 2,
-							icon : 6
-						});
-						$('#userListTable').bootstrapTable("refresh");
-					} else {
-						layer.msg(result.msg, {
-							shift : 2,
-							icon : 5
-						});
-					}
-				}
-			});
-	    },
-	    cancel: function(){
-	    }
-	});
 }

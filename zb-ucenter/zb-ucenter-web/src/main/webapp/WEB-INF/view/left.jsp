@@ -1,72 +1,112 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/view/common/taglibs.jsp"%>
 
-<!-- 本页面涉及的js函数，都在head.jsp页面中     -->
-<div id="sidebar" class="menu-min">
-
-	<!-- <div id="sidebar-shortcuts">
-
-		<div id="sidebar-shortcuts-large">
-
-			<button class="btn btn-small btn-success" onclick="changeMenu();"
-				title="切换菜单">
-				<i class="icon-pencil"></i>
-			</button>
-
-			<button class="btn btn-small btn-warning" title="数据字典"
-				id="adminzidian" onclick="zidian();">
-				<i class="icon-book"></i>
-			</button>
-
-			<button class="btn btn-small btn-danger" title="菜单管理" id="adminmenu"
-				onclick="menu();">
-				<i class="icon-folder-open"></i>
-			</button>
-		</div>
-	</div> -->
-	<!-- #sidebar-shortcuts -->
-	<ul class="nav nav-list">
-        <li style="text-align: center;"><a style="background-color: #62A8D1;color: white;cursor: text;font-size: 14px;" href="javascript:void(0);"><span>不勤于始，将悔于终</span></a></li>
-		<%-- <li class="active" id="fhindex"><a href="${ctx}/index/home"><i class="icon-home"></i><span>系统首页</span></a></li> --%>
-		<li id="fhindex"><a href="${ctx}/index"><i class="icon-home"></i><span>系统首页</span></a></li>
-		<li><a class="J_menuItem" href="${ctx}/index/sourceDownload"><i class="icon-download-alt"></i><span>学习资源下载</span></a></li>
-		<c:forEach items="${menuList}" var="menu">
-		  <shiro:hasPermission name="${menu.permissionCode}">
-			<li id="lm${menu.id }">
-				<a style="cursor: pointer;" class="dropdown-toggle">
-					<i class="${menu.icon == null ? 'icon-desktop' : menu.icon}"></i>
-					<span>${menu.name }</span>
-					<b class="arrow icon-angle-down"></b>
-				</a>
-				<ul class="submenu">
-					<c:forEach items="${menu.subMenu}" var="sub">
-					   <shiro:hasPermission name="${sub.permissionCode}">
-						<c:choose>
-							<c:when test="${not empty sub.url}">
-								<li id="z${sub.id }">
-									<a class="J_menuItem" style="cursor: pointer" href="${ctx}/${sub.url}"><i class="icon-double-angle-right"></i>${sub.name }</a>
-								</li>
-							</c:when>
-							<c:otherwise>
-								<li><a href="javascript:void(0);"><i class="icon-double-angle-right"></i>${sub.name}</a></li>
-							</c:otherwise>
-						</c:choose>
-						</shiro:hasPermission>
-					</c:forEach>
-				</ul>
-			</li>
-			</shiro:hasPermission>
-		</c:forEach>
-	</ul>
-	<!--/.nav-list-->
-
-	<div id="sidebar-collapse">
-		<i class="icon-double-angle-left"></i>
-	</div>
-    <script type="text/javascript">
-        $(document).ready(function(){
-        	$("#sidebar-collapse").click();
-        });
-    </script>
-</div>
-<!--/#sidebar-->
+<!-- ====================== 系统左侧菜单 start ======================  -->
+<aside class="Hui-aside">
+    <div class="menu_dropdown bk_2">
+        <c:forEach items="${menuList}" var="menu">
+            <shiro:hasPermission name="${menu.permissionCode}">
+                <dl id="menu-article">
+		            <dt><i class="Hui-iconfont">${menu.icon}</i> ${menu.name }<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		            <dd>
+		                <ul>
+                            <c:forEach items="${menu.subMenu}" var="sub">
+                                <shiro:hasPermission name="${sub.permissionCode}">
+                                    <li><a data-href="${ctx}/${sub.url}" data-title="${sub.name}" href="javascript:void(0)">${sub.name}</a></li>
+                                </shiro:hasPermission>
+                            </c:forEach>
+		                </ul>
+		            </dd>
+		        </dl>
+            </shiro:hasPermission>
+        </c:forEach>
+        
+        
+        <!-- <dl id="menu-article">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="article-list.html" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-picture">
+            <dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="picture-list.html" data-title="图片管理" href="javascript:void(0)">图片管理</a></li>
+               </ul>
+           </dd>
+        </dl>
+        <dl id="menu-product">
+            <dt><i class="Hui-iconfont">&#xe620;</i> 产品管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="product-brand.html" data-title="品牌管理" href="javascript:void(0)">品牌管理</a></li>
+                    <li><a data-href="product-category.html" data-title="分类管理" href="javascript:void(0)">分类管理</a></li>
+                    <li><a data-href="product-list.html" data-title="产品管理" href="javascript:void(0)">产品管理</a></li>
+               </ul>
+           </dd>
+           </dl>
+        <dl id="menu-comments">
+            <dt><i class="Hui-iconfont">&#xe622;</i> 评论管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                   <ul>
+                    <li><a data-href="http://h-ui.duoshuo.com/admin/" data-title="评论列表" href="javascript:;">评论列表</a></li>
+                    <li><a data-href="feedback-list.html" data-title="意见反馈" href="javascript:void(0)">意见反馈</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-member">
+            <dt><i class="Hui-iconfont">&#xe60d;</i> 会员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="member-list.html" data-title="会员列表" href="javascript:;">会员列表</a></li>
+                    <li><a data-href="member-del.html" data-title="删除的会员" href="javascript:;">删除的会员</a></li>
+                    <li><a data-href="member-level.html" data-title="等级管理" href="javascript:;">等级管理</a></li>
+                    <li><a data-href="member-scoreoperation.html" data-title="积分管理" href="javascript:;">积分管理</a></li>
+                    <li><a data-href="member-record-browse.html" data-title="浏览记录" href="javascript:void(0)">浏览记录</a></li>
+                    <li><a data-href="member-record-download.html" data-title="下载记录" href="javascript:void(0)">下载记录</a></li>
+                    <li><a data-href="member-record-share.html" data-title="分享记录" href="javascript:void(0)">分享记录</a></li>
+                </ul>
+               </dd>
+           </dl>
+        <dl id="menu-admin">
+            <dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="admin-role.html" data-title="角色管理" href="javascript:void(0)">角色管理</a></li>
+                    <li><a data-href="admin-permission.html" data-title="权限管理" href="javascript:void(0)">权限管理</a></li>
+                    <li><a data-href="admin-list.html" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
+                </ul>
+               </dd>
+           </dl>
+        <dl id="menu-tongji">
+            <dt><i class="Hui-iconfont">&#xe61a;</i> 系统统计<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="charts-1.html" data-title="折线图" href="javascript:void(0)">折线图</a></li>
+                    <li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
+                    <li><a data-href="charts-3.html" data-title="区域图" href="javascript:void(0)">区域图</a></li>
+                    <li><a data-href="charts-4.html" data-title="柱状图" href="javascript:void(0)">柱状图</a></li>
+                    <li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
+                    <li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
+                    <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
+                </ul>
+               </dd>
+           </dl>
+        <dl id="menu-system">
+            <dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="system-base.html" data-title="系统设置" href="javascript:void(0)">系统设置</a></li>
+                    <li><a data-href="system-category.html" data-title="栏目管理" href="javascript:void(0)">栏目管理</a></li>
+                    <li><a data-href="system-data.html" data-title="数据字典" href="javascript:void(0)">数据字典</a></li>
+                    <li><a data-href="system-shielding.html" data-title="屏蔽词" href="javascript:void(0)">屏蔽词</a></li>
+                    <li><a data-href="system-log.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
+                </ul>
+               </dd>
+           </dl> -->
+   </div>
+</aside>
+<!-- ====================== 系统左侧菜单 end ======================  -->

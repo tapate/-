@@ -1,18 +1,60 @@
 $(function(){
-    formValidate("#userEditForm",{
-    	userName:{
-            required: true
+        $("#form-user-update").validate({
+        rules:{
+            userName:{
+                required:true,
+                minlength:5,
+                maxlength:20
+            },
+            realName:{
+                required:true
+            }
         },
-        realName:{
-            required: true
+        messages: {
+        	userName: "请输入登录账户，长度5-20位",
+        	realName: "请输入真实用户名"
         },
-        status:{
-            required: true
+        onkeyup:false,
+        focusCleanup:true,
+        success:"",
+        submitHandler:function(form){
+            var options = {
+                type: $(form).attr("method"),
+                url: $(form).attr("action"),
+                success : formResponse,
+                dataType: 'json',  
+                error : function(xhr, status, err) {
+                }  
+            };   
+            $(form).ajaxSubmit(options);
         }
     });
-})  
+});
 
 
+/*表单回调函数*/
+function formResponse(responseText, statusText){
+    if(responseText.code == 200){
+        layer.msg("更新成功,2秒后自动关闭窗口", {
+            shift: 2,
+            time : 2000,
+            icon: 6
+        },function(){
+            //关闭弹出框
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+        
+        $("#searchBtn", parent.document).click();
+    }else{
+        layer.msg(responseText.msg, {
+            shift: 2,
+            icon: 5
+        });
+        return false;
+    }
+}
+ 
 function checkRole() {
     var zTree = $.fn.zTree.getZTreeObj("roleTree"), 
     type = {"Y" : "ps","N" : "ps"};
@@ -31,7 +73,7 @@ $(document).ready(function() {
         },
         callback : {
             onCheck : function(event, treeId, treeNode){//节点被点击后，设置选择的节点id
-            	check_param();
+                check_param();
             }
         }
     };
@@ -55,49 +97,11 @@ function check_param() {
         }
         $("#roleIds").val(pmss);
     } else {
-    	$("#roleIds").val("");
+        $("#roleIds").val("");
         numberval++;
     }
     if (numberval > 0) {
         return false;
     }
     return true;
-}
-
-
-function userSubmitForm(parentIndex){
-    var s=$("#userEditForm").validate().form();
-    if(s){
-    	if(!check_param()){
-    		layer.msg("请为该用户赋予角色", {
-                shift: 2,
-                icon: 5
-            });
-            return false;
-        }
-        
-        $.ajax({
-            type : "post",
-            url : $("#updateUserUrl").val(),
-            data : $("#userEditForm").serialize(),
-            dataType : "json",
-            success : function(data) {
-                if(data.code == 200){
-                    layer.msg('修改成功', {
-                        shift: 2,
-                        icon: 6
-                    });
-                    closeMsg(parentIndex);
-                    
-                    $('#userListTable').bootstrapTable("refresh");
-                }else{
-                    layer.msg(data.msg, {
-                        shift: 2,
-                        icon: 5
-                    });
-                    closeMsg(parentIndex);
-                }
-            }
-        });
-    }
 }
