@@ -35,20 +35,40 @@
         #popMore{text-align:right;border-top:1px dotted #ccc;line-height:24px;margin:8px 0 0 0;}
         #popMore a{color:#f60;}
         #popMore a:hover{color:#f00;}
+        .layui-layer-btn-c{text-align: center;}
     </style>
     
     <script type="text/javascript">
-        var ws = null;
+        var userName = null;
+        var sessionId = null;
+        $(document).ready(function(){
+        	userName= $("#userName").val();
+        	sessionId = $("#sessionId").val();
+            connect();//连接系统消息推送服务
+            account_offline_service_connect();//账户下线通知服务
+            
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+            var day = date.getDate();
+            var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+            var minute =  date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+            var second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+            var timeDate = year+'-' + month+'-' + day + "&nbsp;" + hour + ':' + minute + ':' + second;
+            
+            accountOfflineNotice(userName + "_" + sessionId , 
+            		"您好，当前账号【" + userName + "】 已在其他客户端登录，您的此次会话将要被迫下线，谢谢配合。<br/><br/>登录操作时间：" + timeDate);
+        });
+    </script>
+    <script type="text/javascript">
         function connect() {
-        	var userName = $("#userName").val();
+        	var ws = null;
             if ('WebSocket' in window) {
                 ws= new WebSocket("ws://" + $("#serviceUrl").val() + "/websck?loginUserName=" + userName);
-                //console.log("ws://" + $("#serviceUrl").val() + "/websck?loginUserName=" + userName);
             }else if ('MozWebSocket' in window) {
                 ws = new MozWebSocket("ws://" + $("#serviceUrl").val() + "/websck?loginUserName=" + userName);
             }else {
                 ws = new SockJS("http://" + $("#serviceUrl").val() + "/sockjs/websck?loginUserName=" + userName);
-                //console.log("http://" + $("#serviceUrl").val() + "/sockjs/websck?loginUserName=" + userName);
             }
             ws.onopen = function () {
             	//console.log("消息推送服务已连接");
@@ -66,10 +86,71 @@
             	var pop=new Pop("消息推送服务连接已关闭", "",event.data);
             };
         }
-        
-        $(document).ready(function(){
-        	connect();//连接消息推送服务
-        });
+    </script>
+    
+    
+    <script type="text/javascript">
+	    function account_offline_service_connect() {
+	        var ws = null;
+	        if ('WebSocket' in window) {
+	            ws= new WebSocket("ws://" + $("#serviceUrl").val() + "/websck_notice_offline?loginUserName=" + userName + "_" + sessionId);
+	        }else if ('MozWebSocket' in window) {
+	            ws = new MozWebSocket("ws://" + $("#serviceUrl").val() + "/websck_notice_offline?loginUserName=" + userName + "_" + sessionId);
+	        }else {
+	            ws = new SockJS("http://" + $("#serviceUrl").val() + "/sockjs/websck_notice_offline?loginUserName=" + userName + "_" + sessionId);
+	        }
+	        ws.onopen = function () {
+	            //console.log("消息推送服务已连接");
+	        };
+	        
+	        //消息监听
+	        ws.onmessage = function (event) {
+	            //var pop=new Pop("收到一条推送消息", "",event.data);
+	        	//示范一个公告层
+	        	layer.open({
+	        	    type: 1,
+	        	    title: ["账号下线通知","line-height:30px;height:30px;color:#EB1C27;font-weight:bold;"], //不显示标题栏
+	        	    closeBtn: false,
+	        	    area: "450px;",
+	        	    shade: 0.8,
+	        	    id: 'LAY_layuipro', //设定一个id，防止重复弹出
+	        	    resize: false,
+	        	    btn: ["哎呀妈呀，退出系统吧"],
+	        	    btnAlign: 'c',
+	        	    moveType: 1, //拖拽模式，0或者1
+	        	    content: '<div style="padding: 50px; line-height: 25px; background-color: #393D49; color: #fff;">' + event.data + '</div>',
+	        	    success: function(layero){
+	        	    	  var btn = layero.find('.layui-layer-btn');
+	        	    	  btn.find('.layui-layer-btn0').attr({href: "/login/logout",target: ""}).parent().addClass("layui-layer-btn-c");
+	        	    }
+	        	});
+	        };
+	        ws.onerror = function (evnt) {
+	        };
+	        ws.onclose = function (event) {
+	            var pop=new Pop("消息推送服务连接已关闭", "",event.data);
+	        };
+	    }
+	    
+	    //通知当前账户在其他客户端登录的会话下线操作
+        function accountOfflineNotice(userName,message){
+            $.ajax({
+                type: "POST",
+                url: $("#accountOfflineNoticeUrl").val(),
+                cache: false,  //禁用缓存
+                data: {
+                    "message" : message,
+                    "loginUserName" : userName
+                },
+                dataType: "json",
+                timeout:10000,
+                success: function (result) {
+                    if(result.code == 200){
+                        //推送消息成功
+                    }
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -141,6 +222,8 @@
 	</script>
 	
 	<input type="hidden" id="serviceUrl" value="${serviceUrl}" des="socket服务器域名地址"/>
-	<input type="hidden" id="userName" value="wangwu" des="当前在线用户的用户名"/>
+	<input type="hidden" id="sessionId" value="${sessionId}" des="当前登录用户sessionId"/>
+	<input type="hidden" id="userName" value="${userName}" des="当前在线用户的用户名"/>
+	<input type="hidden" id="accountOfflineNoticeUrl" value="${ctx}/socket/accountOfflineNotice" des="通知当前相同账户在其他客户端登陆的会话下线通知"/>
 </body>
 </html>

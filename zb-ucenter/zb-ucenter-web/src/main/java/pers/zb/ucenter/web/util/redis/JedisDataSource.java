@@ -1,4 +1,4 @@
-package pers.zb.common.util.redis;
+package pers.zb.ucenter.web.util.redis;
 
 import redis.clients.jedis.ShardedJedis;
 

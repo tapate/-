@@ -150,7 +150,7 @@
 		
 		<!-- 
 			经过实际项目的运行测试，发现这部分缓存配置的重要性。
-			1、【未配置cacheManager】 ： 如果没有配置 cacheManager属性，则shiro本身会检测是否配置了缓存机制(cacheManager)，如果没有，则会连续请求5次(可以理解为心跳机制，5次之后就不会继续重复请求了)，导致项目页面响应时间长。
+			1、【未配置cacheManager】 ： 如果没有配置 cacheManager属性，则shiro本身会检测是否配置了缓存机制(cacheManager)，如果没有，则会连续请求(可以理解为心跳机制)，导致项目页面响应时间长。
 			2、【配置了cacheManager】 ： 如果配置了 cacheManager属性，则只会请求1次，大大节省项目页面响应速度。
 		-->
 		

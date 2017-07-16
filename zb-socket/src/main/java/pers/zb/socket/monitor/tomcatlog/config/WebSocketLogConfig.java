@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import pers.zb.socket.monitor.tomcatlog.hndler.SystemWebSocketLogHandler;
+import pers.zb.socket.monitor.tomcatlog.hndler.TomcatLogMonitorWebSocketLogHandler;
 import pers.zb.socket.monitor.tomcatlog.interceptor.HandshakeLogInterceptor;
 
 @Configuration
@@ -22,17 +22,17 @@ public class WebSocketLogConfig extends WebMvcConfigurerAdapter implements WebSo
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(systemWebSocketLogHandler(), "/websck_log").addInterceptors(new HandshakeLogInterceptor());
+        registry.addHandler(tomcatLogMonitorWebSocketLogHandler(), "/websck_log").addInterceptors(new HandshakeLogInterceptor());
 
         System.out.println("registed!");
-        registry.addHandler(systemWebSocketLogHandler(), "/sockjs/websck_log").addInterceptors(new HandshakeLogInterceptor()).withSockJS();
+        registry.addHandler(tomcatLogMonitorWebSocketLogHandler(), "/sockjs/websck_log").addInterceptors(new HandshakeLogInterceptor()).withSockJS();
 
     }
 
     @Bean
-    public WebSocketHandler systemWebSocketLogHandler() {
+    public WebSocketHandler tomcatLogMonitorWebSocketLogHandler() {
         // return new InfoSocketEndPoint();
-        return new SystemWebSocketLogHandler();
+        return new TomcatLogMonitorWebSocketLogHandler();
     }
 
 }

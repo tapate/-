@@ -3,6 +3,10 @@ package pers.zb.ucenter.web.controller.redis;
 import java.util.Date;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.shiro.session.Session;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
@@ -14,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import pers.zb.common.util.AjaxResult;
 import pers.zb.common.util.enums.UserStatus;
-import pers.zb.common.util.redis.RedisClientTemplate;
 import pers.zb.common.util.util.JsonUtil;
 import pers.zb.entity.sys.SysUser;
+import pers.zb.ucenter.web.util.redis.RedisClientTemplate;
 
 @Controller
 @RequestMapping("/redis")
@@ -106,7 +110,6 @@ public class RedisController {
         
     }
 	
-    /*
     //这里其实还是从redis缓存中读取的。HttpSession其实是shiro自己的session管理器.
     @RequestMapping("/tomcatSession")
     public void tomcatSession(HttpServletRequest request,HttpServletResponse response){
@@ -115,6 +118,7 @@ public class RedisController {
         s.setAttribute("name", "tomcat的session测试");
         System.out.println("session存储成功");
     }
+    
     @RequestMapping("/getTomcatSession")
     public void getTomcatSession(HttpServletRequest request,HttpServletResponse response){
         HttpSession s = request.getSession();
@@ -122,5 +126,5 @@ public class RedisController {
         
         Object obj = s.getAttribute("name");
         System.out.println(JsonUtil.toJson(obj));
-    }*/
+    }
 }

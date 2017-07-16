@@ -13,6 +13,7 @@ import org.springframework.web.socket.TextMessage;
 
 import pers.zb.common.util.AjaxResult;
 import pers.zb.socket.message.userpush.hndler.SystemWebSocketHandler;
+import pers.zb.socket.notice.account.offline.handler.AccountOfflineNoticeWebSocketHandler;
 
 @Controller
 @RequestMapping("/socket")
@@ -24,6 +25,11 @@ public class SocketController {
     @Bean
     public SystemWebSocketHandler systemWebSocketHandler() {
         return new SystemWebSocketHandler();
+    }
+    
+    @Bean
+    public AccountOfflineNoticeWebSocketHandler accountOfflineNoticeWebSocketHandler() {
+        return new AccountOfflineNoticeWebSocketHandler();
     }
     
     /**
@@ -82,6 +88,23 @@ public class SocketController {
     public AjaxResult<String> toAllUser(HttpServletRequest request,
             @RequestParam(name="message",required=true,defaultValue="这是一条服务器推送给所有人的消息.") String message){
         systemWebSocketHandler().sendMessageToUsers(new TextMessage(message));
+        return new AjaxResult<String>();
+    }
+    
+    
+    
+    /**
+     * 账户下线通知
+     * @param request
+     * @param loginUserName
+     * @return
+     */
+    @RequestMapping("/accountOfflineNotice")
+    @ResponseBody
+    public AjaxResult<String> accountOfflineNotice(HttpServletRequest request,
+            String loginUserName,
+            @RequestParam(name="message",required=true,defaultValue="您的账号已在其他客户端登录") String message){
+        accountOfflineNoticeWebSocketHandler().sendMessageToUser(loginUserName, new TextMessage(message));
         return new AjaxResult<String>();
     }
 }

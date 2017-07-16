@@ -1,4 +1,4 @@
-package pers.zb.common.util.redis;
+package pers.zb.ucenter.web.util.redis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,7 +15,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 @Component
-public class SystemWebSocketLogHandler implements WebSocketHandler {
+public class TomcatLogMonitorWebSocketLogHandler implements WebSocketHandler {
     
     private Logger logger = LoggerFactory.getLogger(getClass());
     
