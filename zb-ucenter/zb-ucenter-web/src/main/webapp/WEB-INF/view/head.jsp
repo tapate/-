@@ -8,7 +8,7 @@
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
             <nav class="nav navbar-nav">
                 <ul class="cl">
-                    <li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe602;</i> CAS单点登录中央认证系统 <i class="Hui-iconfont">&#xe6d5;</i></a>
+                    <li class="dropDown dropDown_hover" style="margin-left: 20px;"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe602;</i> CAS单点登录中央认证系统 <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" onclick="article_add('OA办公系统','article-add.html')"><i class="Hui-iconfont">&#xe616;</i> OA办公系统</a></li>
                             <li><a href="javascript:;" onclick="picture_add('资源文件管理系统','picture-add.html')"><i class="Hui-iconfont">&#xe613;</i> 资源文件管理系统</a></li>

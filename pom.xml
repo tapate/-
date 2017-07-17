@@ -13,6 +13,7 @@
         <module>zb-entity</module>
         <module>zb-common</module>
         <module>zb-socket</module>
+        <module>zb-oauth</module>
     </modules>
     
     <properties>
