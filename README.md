@@ -67,7 +67,7 @@ ActiveMQ | 消息队列  | [http://activemq.apache.org/](http://activemq.apache.
 Disconf | 分布式配置管理平台  | [http://disconf.readthedocs.io/zh_CN/latest/](http://disconf.readthedocs.io/zh_CN/latest/)
 SockJS | websocket封装框架  | [https://github.com/sockjs/sockjs-client/](https://github.com/sockjs/sockjs-client/)
 CAS | 单点登录认证系统  | [https://www.apereo.org/projects/cas/](https://www.apereo.org/projects/cas/)
-Netty | 网络应用程序异步通信框架  | [http://netty.io/](http://netty.io/)
+Netty | 网络应用程序通信框架  | [http://netty.io/](http://netty.io/)
 Activiti | 工作流框架  | [https://www.activiti.org/](https://www.activiti.org/)
 MessagePack | 对象序列化类库  | [http://msgpack.org/](http://msgpack.org/)
 Mycat | 数据库分库分表中间件  | [http://www.mycat.io/](http://www.mycat.io/)
