@@ -1,8 +1,10 @@
 # zb
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://git.oschina.net/zhoubang85/zb/pulls)
 
-支付技术交流QQ群：470414533
+- 支付技术交流QQ群 ：470414533
+- 联系QQ : 842324724
+- 联系邮箱 ： 842324724@qq.com
+
+详细技术讨论请加QQ群，营造一个温馨、有质量的技术学习空间。
 
 ## 前言
 
