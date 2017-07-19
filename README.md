@@ -257,8 +257,23 @@ maven的编译打包，我就不多说了。如果在项目编译或者打包部
 演示地址： [http://www.2b2b92b.com](http://www.2b2b92b.com "用户管理中心系统访问地址")
 
 ### 预览图
+![login](zb-doc/preview/login.jpg)
+![userlist](zb-doc/preview/userlist.jpg)
+![tomcatlogmonitor](zb-doc/preview/tomcatlogmonitor.jpg)
+![nettychat](zb-doc/preview/nettychat.jpg)
+![socketpushall](zb-doc/preview/socketpushall.jpg)
+![wxmsgtemplate](zb-doc/preview/wxmsgtemplate.jpg)
+![activitibpmnlist](zb-doc/preview/activitibpmnlist.jpg)
+![addrole](zb-doc/preview/addrole.jpg)
+![msgalert](zb-doc/preview/msgalert.jpg)
+![myactprocessrecord](zb-doc/preview/myactprocessrecord.jpg)
+![permissionadd](zb-doc/preview/permissionadd.jpg)
+![socketpushmy](zb-doc/preview/socketpushmy.jpg)
+![myactiviti](zb-doc/preview/myactiviti.jpg)
+![themegreencloor](zb-doc/preview/themegreencloor.jpg)
+![redcolor](zb-doc/preview/redcolor.jpg)
+![deptactpproval](zb-doc/preview/deptactpproval.jpg)
 
-(后期补充)
 
 ### 数据模型
 
