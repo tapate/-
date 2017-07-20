@@ -112,9 +112,11 @@ public class MsgProcessor {
         if (null == msg) {
             return;
         }
-
+        System.out.println("发送消息：" + msg.getCmd());
+        
         // 开始分发了吧,声明一个容器，来保存所有的在线用户
         if (IMP.LOGIN.getName().equals(msg.getCmd())) {
+            System.out.println("发送消息：登录指令 。");
             // 我们自己加的一些东西放入到自定的扩展属性里面去
             client.attr(NICK_NAME).getAndSet(msg.getSender());
             client.attr(IP_ADDR).getAndSet(getIpAddr(client));
@@ -135,7 +137,7 @@ public class MsgProcessor {
 
             // 其他指令的解析
         } else if (IMP.CHAT.getName().equals(msg.getCmd())) {
-
+            System.out.println("发送消息：聊天 。");
             for (Channel channel : onlineUsers) {
                 if (channel != client) {
                     msg.setSender(getNickName(client));
@@ -148,7 +150,7 @@ public class MsgProcessor {
             }
 
         } else if (IMP.FLOWER.getName().equals(msg.getCmd())) {
-
+            System.out.println("发送消息：送鲜花。");
             // 非正常的情况下，就频繁刷花，导致整个屏幕一直是鲜花特效
             // 影响聊天效果
             // 这时候，我们就要加上一个限制，规定1分钟之内，每个人只能刷一次鲜花
@@ -173,7 +175,9 @@ public class MsgProcessor {
                     return;
                 }
             }
-
+            if(onlineUsers != null){
+                System.out.println("发送消息，onlineUsers：" + onlineUsers.size());
+            }
             // 正常的送花流程
             for (Channel channel : onlineUsers) {
                 if (channel != client) {

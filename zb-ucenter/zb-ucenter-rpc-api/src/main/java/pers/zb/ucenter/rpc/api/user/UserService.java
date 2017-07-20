@@ -1,5 +1,6 @@
 package pers.zb.ucenter.rpc.api.user;
 
+import pers.zb.common.util.AjaxResult;
 import pers.zb.common.util.Pager;
 import pers.zb.common.util.annotation.DataSource;
 import pers.zb.common.util.enums.DataSourceEnum;
@@ -36,8 +37,9 @@ public interface UserService extends BaseService<SysUser> {
      * 用户：zhoubang
      * 
      * @param user
+     * @return 
      */
-    void deleteUser(SysUser user) throws Exception;
+    AjaxResult<String> deleteUser(Long userId) throws Exception;
 
     /**
      * 更新用户信息、所属角色
@@ -66,5 +68,5 @@ public interface UserService extends BaseService<SysUser> {
      * @param userIdArr
      * @throws Exception
      */
-    void deleteUsers(Long[] userIdArr) throws Exception;
+    AjaxResult<String> deleteUsers(Long[] userIdArr) throws Exception;
 }

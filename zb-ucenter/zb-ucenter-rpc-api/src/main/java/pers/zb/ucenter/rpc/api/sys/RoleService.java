@@ -90,6 +90,6 @@ public interface RoleService extends BaseService<SysRole> {
      * @param role
      * @throws Exception
      */
-    void deleteRole(SysRole role,AjaxResult<String> result) throws Exception;
+    AjaxResult<String> deleteRole(Long roleId) throws Exception;
 
 }

@@ -67,6 +67,14 @@ public interface PermissionService extends BaseService<SysPermission> {
      * @param result
      * @throws Exception
      */
-    void deletePermission(SysPermission permission, AjaxResult<String> result) throws Exception;
+    AjaxResult<String> deletePermission(Long permissionId) throws Exception;
+
+    /**
+     * 根据code获取权限
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    SysPermission selectByCode(String code) throws Exception;
 
 }

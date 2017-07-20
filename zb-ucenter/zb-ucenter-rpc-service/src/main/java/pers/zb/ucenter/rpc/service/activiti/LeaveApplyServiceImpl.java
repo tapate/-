@@ -194,8 +194,18 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
             /** 获取请假相关数据 */
             String processInstanceId = task.getProcessInstanceId();//流程实例ID
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+            if(processInstance == null){
+                continue;
+            }
+            
             String businessKey = processInstance.getBusinessKey();//业务key，对应的请假记录ID
+            if(StringUtils.isBlank(businessKey)){
+                continue;
+            }
             LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(businessKey));//根据ID获取请假记录
+            if(leaveApply == null){
+                continue;
+            }
             
             SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
             
@@ -282,9 +292,15 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         for(Task task : pagerTasks){
             String processInstanceId = task.getProcessInstanceId();//流程实例ID
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();//获取流程实例
+            if(processInstance == null){
+                continue;
+            }
             
             String businessKey = processInstance.getBusinessKey();//业务key，实际也就是请假申请记录的ID
             LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(businessKey));//获取请假申请记录
+            if(leaveApply == null){
+                continue;
+            }
             
             SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
             
@@ -358,6 +374,10 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
         for (HistoricProcessInstance historicProcessInstance : historicProcessInstanceList) {
             //根据业务key获取请假申请记录。在该流程中，业务key其实就是请假申请记录的id
             LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(historicProcessInstance.getBusinessKey()));
+            if(leaveApply == null){
+                continue;
+            }
+            
             SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
             
             LeaveApplyHistoryVo vo = new LeaveApplyHistoryVo();

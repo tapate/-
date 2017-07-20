@@ -21,6 +21,7 @@ import pers.zb.ucenter.dao.sys.PermissionMapper;
 import pers.zb.ucenter.rpc.api.sys.PermissionService;
 import pers.zb.ucenter.rpc.api.sys.RolePermissionService;
 import pers.zb.ucenter.rpc.service.BaseServiceImpl;
+import tk.mybatis.mapper.entity.Example;
 
 @Service("permissionServiceImpl")
 public class PermissionServiceImpl extends BaseServiceImpl<SysPermission> implements PermissionService {
@@ -79,16 +80,39 @@ public class PermissionServiceImpl extends BaseServiceImpl<SysPermission> implem
 
     @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
     @Override
-    public void deletePermission(SysPermission permission, AjaxResult<String> result) throws Exception {
+    public AjaxResult<String> deletePermission(Long permissionId) throws Exception {
+        AjaxResult<String> result = new AjaxResult<String>();
+        if(null == permissionId || "".equals(permissionId)){
+            result.setCode(10001);
+            result.setMsg("请选择一个权限删除");
+            return result;
+        }
+        
+        SysPermission permission = permissionMapper.selectByPrimaryKey(permissionId);
+        if(permission == null){
+            result.setCode(10002);
+            result.setMsg("该权限不存在");
+            return result;
+        }
+        
         //检查该权限是否被分配给角色
         boolean bool = rolePermissionService.checkPermissionIsBindRole(permission.getId());
         if(bool){
             result.setCode(10005);
             result.setMsg("该权限已被其他角色所绑定使用，不能删除");
-            return;
+            return result;
         }
         
         //删除权限
         permissionMapper.delete(permission);
+        return result;
+    }
+
+    @Override
+    public SysPermission selectByCode(String code) throws Exception {
+        Example example = new Example(SysPermission.class);
+        example.createCriteria().andEqualTo("code", code);
+        List<SysPermission> pList = permissionMapper.selectByExample(example);
+        return (pList == null || pList.size() <= 0) ? null : pList.get(0);
     }
 }

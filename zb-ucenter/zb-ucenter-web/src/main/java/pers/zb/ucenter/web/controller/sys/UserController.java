@@ -141,22 +141,9 @@ public class UserController {
         logger.debug("删除用户，qo参数：userQo:" + JsonUtil.toJson(qo));
 
         AjaxResult<String> result = new AjaxResult<String>();
-
-        if (qo.getUserId() == null || "".equals(qo.getUserId())) {
-            result.setCode(10001);
-            result.setMsg("userId为空");
-            return result;
-        }
-
-        SysUser user = userService.get(qo.getUserId());
-        if (user == null) {
-            result.setCode(10002);
-            result.setMsg("该用户不存在");
-            return result;
-        }
         try {
             // 删除用户与角色
-            userService.deleteUser(user);
+            result = userService.deleteUser(qo.getUserId());
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -178,16 +165,9 @@ public class UserController {
         logger.debug("删除用户，qo参数：userQo:" + JsonUtil.toJson(qo));
 
         AjaxResult<String> result = new AjaxResult<String>();
-
-        if (qo.getUserIdArr() == null || qo.getUserIdArr().length <= 0) {
-            result.setCode(10001);
-            result.setMsg("userId为空");
-            return result;
-        }
-
         try {
             // 删除用户与角色
-            userService.deleteUsers(qo.getUserIdArr());
+            result = userService.deleteUsers(qo.getUserIdArr());
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -237,6 +217,7 @@ public class UserController {
             // tree树，角色数据
             List<ZtreeVo> allRole = null;
             if (userHaveAdminRole) {
+                map.put("userHaveAdminRole", userHaveAdminRole);// 账户状态
                 // 角色列表，包含管理员角色
                 allRole = roleService.queryAllFormatWithZtree(false, true);
             } else {
@@ -401,7 +382,13 @@ public class UserController {
             result.setMsg("请为用户设置角色");
             return result;
         }
-
+        
+        SysUser sysUser = userService.getUserByName(qo.getUserName());
+        if(sysUser != null){
+            result.setCode(10006);
+            result.setMsg("当前账户名已经存在");
+            return result;
+        }
         // 保存用户、角色
         try {
             userService.saveUser(qo);

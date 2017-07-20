@@ -280,23 +280,9 @@ public class RoleController {
     @ResponseBody
     public AjaxResult<String> deleteRole(Long roleId) {
         AjaxResult<String> result = new AjaxResult<String>();
-        
-        if (roleId == null) {
-            result.setCode(10001);
-            result.setMsg("角色ID为空");
-            return result;
-        }
-        
-        SysRole role = roleService.get(roleId);
-        if (role == null) {
-            result.setCode(10002);
-            result.setMsg("角色不存在");
-            return result;
-        }
-        
         //删除角色
         try {
-            roleService.deleteRole(role,result);
+            result = roleService.deleteRole(roleId);
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(10003);

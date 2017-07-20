@@ -23,7 +23,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录账户：</label>
                 <div class="formControls col-xs-8 col-sm-9">
-                    <input type="text" class="input-text" value="${user.userName}" placeholder="请输入登录账户" id="userName" name="userName">
+                    <input type="text" class="input-text" value="${user.userName}" placeholder="请输入登录账户" id="userName" name="userName" <c:if test="${userHaveAdminRole == true}">disabled="disabled"</c:if>>
                 </div>
             </div>
             <div class="row cl">
@@ -43,7 +43,7 @@
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3">账户状态：</label>
                 <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
-                    <select class="select" name="status">
+                    <select class="select" name="status" <c:if test="${userHaveAdminRole == true}">disabled="disabled"</c:if>>
                         <c:forEach items="${userStatus}" var="s">
                             <option value="${s}" <c:if test="${user.status == s}">selected="selected"</c:if> >${s.description}</option>
                         </c:forEach>

@@ -17,7 +17,7 @@
 	
 	<%@ include file="/WEB-INF/view/common/common.jsp"%>
 	
-	<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-migrate/1.1.1/jquery-migrate.min.js"></script>
     <script type="text/javascript" src="${ctx}/resources/lib/custom/rb-pop.js"></script>
     <script src="${ctx}/resources/lib/sockjs/0.3.4/sockjs-0.3.min.js"></script>
     

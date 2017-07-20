@@ -122,19 +122,36 @@ public class RoleServiceImpl extends BaseServiceImpl<SysRole> implements RoleSer
         rolePermissionService.updateRolePermission(role,permissionIds);
     }
 
+    @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
     @Override
-    public void deleteRole(SysRole role,AjaxResult<String> result) throws Exception {
+    public AjaxResult<String> deleteRole(Long roleId) throws Exception {
+        AjaxResult<String> result = new AjaxResult<String>();
+        if (roleId == null) {
+            result.setCode(10001);
+            result.setMsg("角色ID为空");
+            return result;
+        }
+        
+        SysRole role = roleMapper.selectByPrimaryKey(roleId);
+        if (role == null) {
+            result.setCode(10002);
+            result.setMsg("角色不存在");
+            return result;
+        }
+        
+        
         //校验该角色是否被用户绑定使用
-        boolean bool = userRoleService.checkRoleIsBindUser(role.getId());
+        boolean bool = userRoleService.checkRoleIsBindUser(roleId);
         if(bool){
             result.setCode(10004);
             result.setMsg("该角色已被其他用户所绑定使用，不能删除");
-            return;
+            return result;
         }
         //删除角色
         roleMapper.delete(role);
         
         //删除角色权限
         rolePermissionService.deleteRolePermission(role);
+        return result;
     }
 }

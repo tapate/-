@@ -153,6 +153,13 @@ public class PermissionController {
         }
         
         try {
+            SysPermission sysPermission =permissionService.selectByCode(permission.getCode());
+            if (sysPermission != null) {
+                result.setCode(10006);
+                result.setMsg("权限code已经存在");
+                return result;
+            }
+            
             permissionService.save(permission);
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,23 +212,9 @@ public class PermissionController {
     @ResponseBody
     public AjaxResult<String> deletePermission(Long permissionId) {
         AjaxResult<String> result = new AjaxResult<String>();
-        
-        if(null == permissionId || "".equals(permissionId)){
-            result.setCode(10001);
-            result.setMsg("请选择一个权限删除");
-            return result;
-        }
-        
-        SysPermission permission = permissionService.get(permissionId);
-        if(permission == null){
-            result.setCode(10002);
-            result.setMsg("该权限不存在");
-            return result;
-        }
-        
         try {
             //删除权限
-            permissionService.deletePermission(permission,result);
+            result = permissionService.deletePermission(permissionId);
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(10003);
