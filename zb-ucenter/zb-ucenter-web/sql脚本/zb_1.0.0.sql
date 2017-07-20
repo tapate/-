@@ -1,8 +1,9 @@
 /*
 SQLyog Ultimate v12.08 (64 bit)
-MySQL - 5.6.35 : Database - zb_server
+MySQL - 5.6.35-log : Database - zb_server
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -65,11 +66,11 @@ CREATE TABLE `leave_apply` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COMMENT='OA请假申请表';
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COMMENT='OA请假申请表';
 
 /*Data for the table `leave_apply` */
 
-insert  into `leave_apply`(`id`,`process_instance_id`,`type`,`reason`,`user_id`,`start_date`,`end_date`,`create_time`,`update_time`) values (9,'2505',0,'身体不舒服了',1,'2017-03-31 00:00:00','2017-04-01 00:00:00','2017-03-31 18:08:57','2017-03-31 18:08:57'),(10,'2513',1,'回去见女朋友哈',1,'2017-03-29 00:00:00','2017-03-31 00:00:00','2017-03-31 18:09:46','2017-03-31 18:09:46'),(11,'7507',4,'生孩子去~哈哈',1,'2017-04-01 00:00:00','2017-04-07 00:00:00','2017-04-01 14:55:54','2017-04-01 14:55:54'),(12,'12503',0,'sad',1,'2017-04-24 00:00:00','2017-05-04 00:00:00','2017-04-24 11:24:25','2017-04-24 11:24:25'),(27,'17505',0,'不错哟~',1,'2017-05-09 00:00:00','2017-05-10 00:00:00','2017-05-09 17:06:07','2017-05-09 17:06:07'),(28,'17511',1,'什么情况',1,'2017-05-10 00:00:00','2017-05-19 00:00:00','2017-05-09 17:08:48','2017-05-09 17:08:48'),(29,'20001',1,'什么情况呢',1,'2017-05-12 00:00:00','2017-05-13 00:00:00','2017-05-12 16:38:31','2017-05-12 16:38:31'),(30,'22513',0,'OA请假申请',1,'2017-05-12 00:00:00','2017-05-14 00:00:00','2017-05-12 16:54:13','2017-05-12 16:54:13'),(31,'22519',0,'dsada',1,'2017-05-12 00:00:00','2017-05-27 00:00:00','2017-05-12 17:00:34','2017-05-12 17:00:34'),(32,'22529',2,'怎么不行了呢？',1,'2017-05-12 00:00:00','2017-05-17 00:00:00','2017-05-12 17:25:32','2017-05-12 17:25:32'),(33,'22535',0,'水电费水电费',2,'2017-05-12 00:00:00','2017-05-18 00:00:00','2017-05-12 17:54:24','2017-05-12 17:54:24'),(34,'1',1,'什么情况啊！',1,'2017-05-19 00:00:00','2017-05-20 00:00:00','2017-05-19 10:41:38','2017-05-19 10:41:39'),(35,'11',0,'是的撒的',1,'2017-05-19 00:00:00','2017-05-20 00:00:00','2017-05-19 11:07:57','2017-05-19 11:07:57'),(38,'5005',0,'hgfhfg',1,'2017-05-19 00:00:00','2017-05-20 00:00:00','2017-05-19 11:50:46','2017-05-19 11:50:46'),(39,'7505',0,'4343',1,'2017-05-19 00:00:00','2017-05-20 00:00:00','2017-05-19 13:53:23','2017-05-19 13:53:23'),(41,'12505',2,'ggg发过的',1,'2017-05-19 00:00:00','2017-05-25 00:00:00','2017-05-19 14:10:12','2017-05-19 14:10:12'),(43,'17505',0,'辅导辅导',1,'2017-05-19 00:00:00','2017-05-24 00:00:00','2017-05-19 14:25:39','2017-05-19 14:25:39'),(44,'20005',0,'dddd多少',1,'2017-05-19 00:00:00','2017-05-24 00:00:00','2017-05-19 15:18:31','2017-05-19 15:18:31'),(45,'22505',0,'休息了',2,'2017-05-19 00:00:00','2017-05-20 00:00:00','2017-05-19 15:36:35','2017-05-19 15:36:35'),(46,'25006',2,'不错哟',2,'2017-05-19 00:00:00','2017-05-24 00:00:00','2017-05-19 15:47:06','2017-05-19 15:47:06'),(47,'27509',0,'对对对',2,'2017-05-19 00:00:00','2017-05-28 00:00:00','2017-05-19 15:56:00','2017-05-19 15:56:00'),(48,'30005',0,'还好',2,'2017-05-19 00:00:00','2017-05-24 00:00:00','2017-05-19 16:13:23','2017-05-19 16:13:23'),(49,'30044',2,'飒飒',2,'2017-05-19 00:00:00','2017-05-31 00:00:00','2017-05-19 16:18:32','2017-05-19 16:18:32'),(50,'30068',4,'对对对',2,'2017-05-19 00:00:00','2017-05-31 00:00:00','2017-05-19 16:25:15','2017-05-19 16:25:15'),(51,'32501',0,'顶顶顶顶',2,'2017-05-18 00:00:00','2017-05-30 00:00:00','2017-05-19 16:33:13','2017-05-19 16:33:13'),(52,'37505',0,'有事请假2天',2,'2017-05-19 00:00:00','2017-05-22 00:00:00','2017-05-19 16:52:06','2017-05-19 16:52:06'),(53,'37515',2,'休年假咯~',2,'2017-05-13 00:00:00','2017-05-25 00:00:00','2017-05-19 16:52:29','2017-05-19 16:52:29'),(54,'37525',1,'生病了，给我钱看病~',2,'2017-05-19 00:00:00','2017-05-20 00:00:00','2017-05-19 16:52:47','2017-05-19 16:52:47'),(55,'37535',0,'旅游了',2,'2017-05-18 00:00:00','2017-05-31 00:00:00','2017-05-19 16:53:19','2017-05-19 16:53:19'),(56,'37590',0,'约会去~',2,'2017-05-19 00:00:00','2017-05-24 00:00:00','2017-05-19 16:58:55','2017-05-19 16:58:55'),(57,'40001',4,'哦婆婆',2,'2017-05-19 00:00:00','2017-05-25 00:00:00','2017-05-19 17:39:42','2017-05-19 17:39:42'),(58,'40060',0,'SSL',2,'2017-06-27 00:00:00','2017-06-29 00:00:00','2017-06-27 18:13:39','2017-06-27 18:13:39'),(59,'45009',0,'哈哈哈',31,'2017-07-11 00:00:00','2017-07-13 00:00:00','2017-07-11 23:23:37','2017-07-11 23:23:37'),(60,'45019',2,'打撒大撒',31,'2017-07-11 00:00:00','2017-07-20 00:00:00','2017-07-11 23:24:49','2017-07-11 23:24:49'),(61,'45029',4,'123456',31,'2017-07-11 00:00:00','2017-07-19 00:00:00','2017-07-11 23:26:58','2017-07-11 23:26:58'),(62,'45039',0,'dddd',31,'2017-07-11 00:00:00','2017-07-13 00:00:00','2017-07-11 23:30:27','2017-07-11 23:30:27');
+
 
 /*Table structure for table `order_info` */
 
@@ -102,11 +103,11 @@ CREATE TABLE `sys_menu` (
   `type` varchar(10) DEFAULT NULL,
   `permission_code` varchar(50) NOT NULL COMMENT '所需权限',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 /*Data for the table `sys_menu` */
 
-insert  into `sys_menu`(`id`,`name`,`url`,`parent_id`,`sort`,`icon`,`type`,`permission_code`) values (1,'系统管理','#',0,'1','&#xe61d;','1','sys:mgt'),(2,'用户管理','/user/toUserListView',1,'2',NULL,'1','user:mgt'),(4,'角色管理','/role/toRoleListView',1,'4',NULL,'1','role:mgt'),(5,'权限管理','/permission/toListView',1,'3',NULL,'1','permission:mgt'),(6,'微信开发','#',0,'1','&#xe694;','1','wechat:mgt'),(7,'模板消息','/wechat/template/toTemplateMsgView',6,'2',NULL,'1','template:msg:send'),(9,'实时监控','#',0,'1','&#xe695;','1','monitor:mgt'),(10,'tomcat日志实时监控','/socket/tomcatlog',9,'2',NULL,'1','monitor:tomcat:log'),(11,'消息推送','#',0,'1','&#xe6ce;','1','socket:push:mgt'),(12,'在线聊天','#',0,'1','&#xe622;','1','chat:mgt'),(13,'netty实现在线聊天','/chat/toChatView',12,'2','icon-rss','1','chat:netty:service'),(14,'activiti工作流','#',0,'1','&#xe637;','1','activiti:mgt'),(15,'OA请假申请','/oa/toOaApplyView',14,'3','icon-rss','1','activiti:oa:apply'),(16,'已部署工作流程','/activiti/toProcessListView',14,'2','icon-rss','1','activiti:process:list'),(17,'我发起的请假流程','/oa/toMyLeaveApplyView',14,'4','icon-rss','1','activiti:myprocess:leaveapply'),(18,'部门领导审批','/oa/toDeptleaderAuditView',14,'5','icon-rss','1','activiti:deptleader:audit'),(19,'请假调整申请','/oa/toMyLeaveApplyTurndownView',14,'6','icon-rss','1','activiti:myleaveapply:modify'),(20,'我的请假历史','/oa/toMyLeaveApplyHistoryView',14,'7','icon-rss','1','activiti:myleaveapplyed:history'),(21,'人事审批','/oa/toHrAuditView',14,'8','icon-rss','1','activiti:hr:audit'),(22,'用户消息推送','/socket/userpush',11,NULL,NULL,'1','socket:user:msgpush');
+insert  into `sys_menu`(`id`,`name`,`url`,`parent_id`,`sort`,`icon`,`type`,`permission_code`) values (1,'系统管理','#',0,'1','&#xe61d;','1','sys:mgt'),(2,'用户管理','/user/toUserListView',1,'2',NULL,'1','user:mgt'),(4,'角色管理','/role/toRoleListView',1,'4',NULL,'1','role:mgt'),(5,'权限管理','/permission/toListView',1,'3',NULL,'1','permission:mgt'),(6,'微信开发','#',0,'1','&#xe694;','1','wechat:mgt'),(7,'模板消息','/wechat/template/toTemplateMsgView',6,'2',NULL,'1','template:msg:send'),(9,'实时监控','#',0,'1','&#xe695;','1','monitor:mgt'),(10,'tomcat日志实时监控','/socket/tomcatlog',9,'2',NULL,'1','monitor:tomcat:log'),(11,'消息推送','#',0,'1','&#xe6ce;','1','socket:push:mgt'),(12,'在线聊天','#',0,'1','&#xe622;','1','chat:mgt'),(13,'netty实现在线聊天','/chat/toChatView',12,'2','icon-rss','1','chat:netty:service'),(14,'activiti工作流','#',0,'1','&#xe637;','1','activiti:mgt'),(15,'OA请假申请','/oa/toOaApplyView',14,'3','icon-rss','1','activiti:oa:apply'),(16,'已部署工作流程','/activiti/toProcessListView',14,'2','icon-rss','1','activiti:process:list'),(17,'我发起的请假流程','/oa/toMyLeaveApplyView',14,'4','icon-rss','1','activiti:myprocess:leaveapply'),(18,'部门领导审批','/oa/toDeptleaderAuditView',14,'5','icon-rss','1','activiti:deptleader:audit'),(19,'请假调整申请','/oa/toMyLeaveApplyTurndownView',14,'6','icon-rss','1','activiti:myleaveapply:modify'),(20,'我的请假历史','/oa/toMyLeaveApplyHistoryView',14,'7','icon-rss','1','activiti:myleaveapplyed:history'),(21,'人事审批','/oa/toHrAuditView',14,'8','icon-rss','1','activiti:hr:audit'),(22,'推送消息给当前用户','/socket/userpush',11,'2',NULL,'1','socket:user:msgpush'),(23,'推送消息给所有用户','/socket/userpush/all',11,'3',NULL,'1','socket:alluser:msgpush');
 
 /*Table structure for table `sys_permission` */
 
@@ -120,11 +121,11 @@ CREATE TABLE `sys_permission` (
   `parent_id` bigint(20) DEFAULT NULL COMMENT '父id',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态，0：可用，1：不可用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COMMENT='权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 /*Data for the table `sys_permission` */
 
-insert  into `sys_permission`(`id`,`name`,`code`,`description`,`parent_id`,`status`) values (1,'系统管理','sys:mgt','对系统模块的管理',-1,0),(2,'人员管理','user:mgt','对人员进行管理',1,0),(3,'角色管理','role:mgt','对角色进行管理',1,0),(4,'权限管理','permission:mgt','对权限进行管理',1,0),(9,'查看用户列表','user:list','可以查看用户列表',2,0),(10,'编辑用户信息','user:edit','可以编辑用户信息',9,0),(11,'删除用户','user:delete','可以删除用户',9,0),(12,'查看角色列表','role:list','可以查看角色列表',3,0),(13,'查看权限列表','permission:list',NULL,4,0),(14,'新增角色','role:add','新增角色信息',12,0),(15,'编辑角色','role:edit','编辑角色信息',12,0),(16,'删除角色','role:delete','可以删除角色',12,0),(17,'新增权限','permission:add','可以添加新权限',13,0),(18,'编辑权限','permission:edit','修改权限信息',13,0),(19,'删除权限','permission:delete','可以删除权限数据',13,0),(20,'添加用户','user:add','可以添加新的用户',9,0),(21,'微信开发','wechat:mgt','微信相关功能开发演示',-1,0),(22,'微信模板消息','template:msg:send','测试发送微信模板消息',21,0),(23,'监控管理','monitor:mgt','监控管理',-1,0),(24,'tomcat日志监控','monitor:tomcat:log','可以查看服务器上tomcat的实时打印日志',23,0),(25,'服务器消息推送','socket:push:mgt','服务器消息推送',-1,0),(26,'在线聊天','chat:mgt','在线聊天',-1,0),(27,'netty实现在线聊天','chat:netty:service','netty实现在线聊天',26,0),(28,'activiti工作流','activiti:mgt','activiti工作流相关技术',-1,0),(29,'OA请假流程','activiti:oa:apply','基于工作流实现OA请假',28,0),(30,'已部署的工作流','activiti:process:list','已部署的工作流',28,0),(31,'我发起的请假流程','activiti:myprocess:leaveapply','我发起的请假流程',28,0),(32,'部门领导审批','activiti:deptleader:audit','部门领导审批',28,0),(33,'请假调整申请','activiti:myleaveapply:modify','重新修改被驳回的请假申请',28,0),(34,'我的请假历史','activiti:myleaveapplyed:history','我的请假历史',28,0),(35,'人事审批请假申请','activiti:hr:audit','人事审批请假申请',28,0),(39,'用户消息主动推送','socket:user:msgpush','后台推送消息给前端用户(可以指定推送给某用户、所有用户)',25,0);
+insert  into `sys_permission`(`id`,`name`,`code`,`description`,`parent_id`,`status`) values (1,'系统管理','sys:mgt','对系统模块的管理',-1,0),(2,'人员管理','user:mgt','对人员进行管理',1,0),(3,'角色管理','role:mgt','对角色进行管理',1,0),(4,'权限管理','permission:mgt','对权限进行管理',1,0),(9,'查看用户列表','user:list','可以查看用户列表',2,0),(10,'编辑用户信息','user:edit','可以编辑用户信息',9,0),(11,'删除用户','user:delete','可以删除用户',9,0),(12,'查看角色列表','role:list','可以查看角色列表',3,0),(13,'查看权限列表','permission:list',NULL,4,0),(14,'新增角色','role:add','新增角色信息',12,0),(15,'编辑角色','role:edit','编辑角色信息',12,0),(16,'删除角色','role:delete','可以删除角色',12,0),(17,'新增权限','permission:add','可以添加新权限',13,0),(18,'编辑权限','permission:edit','修改权限信息',13,0),(19,'删除权限','permission:delete','可以删除权限数据',13,0),(20,'添加用户','user:add','可以添加新的用户',9,0),(21,'微信开发','wechat:mgt','微信相关功能开发演示',-1,0),(22,'微信模板消息','template:msg:send','测试发送微信模板消息',21,0),(23,'监控管理','monitor:mgt','监控管理',-1,0),(24,'tomcat日志监控','monitor:tomcat:log','可以查看服务器上tomcat的实时打印日志',23,0),(25,'服务器消息推送','socket:push:mgt','服务器消息推送',-1,0),(26,'在线聊天','chat:mgt','在线聊天',-1,0),(27,'netty实现在线聊天','chat:netty:service','netty实现在线聊天',26,0),(28,'activiti工作流','activiti:mgt','activiti工作流相关技术',-1,0),(29,'OA请假流程','activiti:oa:apply','基于工作流实现OA请假',28,0),(30,'已部署的工作流','activiti:process:list','已部署的工作流',28,0),(31,'我发起的请假流程','activiti:myprocess:leaveapply','我发起的请假流程',28,0),(32,'部门领导审批','activiti:deptleader:audit','部门领导审批',28,0),(33,'请假调整申请','activiti:myleaveapply:modify','重新修改被驳回的请假申请',28,0),(34,'我的请假历史','activiti:myleaveapplyed:history','我的请假历史',28,0),(35,'人事审批请假申请','activiti:hr:audit','人事审批请假申请',28,0),(39,'推送消息给自己','socket:user:msgpush','推送消息给自己',25,0),(40,'推送消息给所有人','socket:alluser:msgpush','推送消息给所有人',25,0);
 
 /*Table structure for table `sys_role` */
 
@@ -153,11 +154,11 @@ CREATE TABLE `sys_role_permission` (
   `role_id` bigint(20) NOT NULL,
   `permission_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1051 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=1119 DEFAULT CHARSET=utf8 COMMENT='角色权限表';
 
 /*Data for the table `sys_role_permission` */
 
-insert  into `sys_role_permission`(`id`,`role_id`,`permission_id`) values (226,3,-1),(227,3,1),(228,3,2),(688,5,-1),(689,5,28),(690,5,30),(691,5,32),(830,4,-1),(831,4,28),(832,4,30),(833,4,35),(870,2,-1),(871,2,1),(872,2,2),(873,2,28),(874,2,29),(875,2,30),(876,2,31),(877,2,33),(878,2,34),(1020,1,-1),(1021,1,1),(1022,1,2),(1023,1,9),(1024,1,10),(1025,1,11),(1026,1,20),(1027,1,3),(1028,1,12),(1029,1,14),(1030,1,15),(1031,1,16),(1032,1,4),(1033,1,13),(1034,1,17),(1035,1,18),(1036,1,19),(1037,1,21),(1038,1,22),(1039,1,23),(1040,1,24),(1041,1,25),(1042,1,39),(1043,1,26),(1044,1,27),(1045,1,28),(1046,1,29),(1047,1,30),(1048,1,31),(1049,1,33),(1050,1,34);
+insert  into `sys_role_permission`(`id`,`role_id`,`permission_id`) values (226,3,-1),(227,3,1),(228,3,2),(688,5,-1),(689,5,28),(690,5,30),(691,5,32),(830,4,-1),(831,4,28),(832,4,30),(833,4,35),(870,2,-1),(871,2,1),(872,2,2),(873,2,28),(874,2,29),(875,2,30),(876,2,31),(877,2,33),(878,2,34),(1085,1,-1),(1086,1,1),(1087,1,2),(1088,1,9),(1089,1,10),(1090,1,11),(1091,1,20),(1092,1,3),(1093,1,12),(1094,1,14),(1095,1,15),(1096,1,16),(1097,1,4),(1098,1,13),(1099,1,17),(1100,1,18),(1101,1,19),(1102,1,21),(1103,1,22),(1104,1,23),(1105,1,24),(1106,1,25),(1107,1,39),(1108,1,40),(1109,1,26),(1110,1,27),(1111,1,28),(1112,1,29),(1113,1,30),(1114,1,31),(1115,1,32),(1116,1,33),(1117,1,34),(1118,1,35);
 
 /*Table structure for table `sys_user` */
 
@@ -178,7 +179,7 @@ CREATE TABLE `sys_user` (
 
 /*Data for the table `sys_user` */
 
-insert  into `sys_user`(`id`,`user_name`,`password`,`real_name`,`status`,`open_id`,`from_system`,`create_time`,`update_time`) values (1,'admin','e10adc3949ba59abbe56e057f20f883e','超级管理员',0,NULL,0,'2016-08-03 13:22:46','2017-03-31 18:16:39'),(3,'bumenjingli','e10adc3949ba59abbe56e057f20f883e','部门经理',0,NULL,0,'2017-04-01 11:36:59','2017-04-01 11:36:59'),(5,'renshi','e10adc3949ba59abbe56e057f20f883e','小欣',0,NULL,0,'2017-05-19 14:34:32','2017-07-11 16:40:40'),(6,'renshi02','e10adc3949ba59abbe56e057f20f883e','小花',2,NULL,0,'2017-05-19 15:20:50','2017-07-11 17:15:53'),(31,'yuangong01','e10adc3949ba59abbe56e057f20f883e','张三',1,NULL,0,'2017-07-11 16:33:26','2017-07-11 17:16:00'),(34,'chunayuan','e10adc3949ba59abbe56e057f20f883e','李斯',0,NULL,0,'2017-07-11 16:41:36','2017-07-11 16:41:36'),(36,'caiwu','e10adc3949ba59abbe56e057f20f883e','张华',0,NULL,0,'2017-07-11 16:42:17','2017-07-11 16:42:17'),(38,'caigoujingli','e10adc3949ba59abbe56e057f20f883e','李天',0,NULL,0,'2017-07-11 16:42:56','2017-07-11 16:42:56'),(39,'zongjingli','e10adc3949ba59abbe56e057f20f883e','王化',2,NULL,0,'2017-07-11 16:43:18','2017-07-11 17:15:41');
+insert  into `sys_user`(`id`,`user_name`,`password`,`real_name`,`status`,`open_id`,`from_system`,`create_time`,`update_time`) values (1,'admin','e10adc3949ba59abbe56e057f20f883e','超级管理员',0,NULL,0,'2016-08-03 13:22:46','2017-07-20 18:53:13'),(3,'bumenjingli','e10adc3949ba59abbe56e057f20f883e','部门经理',0,NULL,0,'2017-04-01 11:36:59','2017-04-01 11:36:59'),(5,'renshi','e10adc3949ba59abbe56e057f20f883e','小欣',0,NULL,0,'2017-05-19 14:34:32','2017-07-11 16:40:40'),(6,'renshi02','e10adc3949ba59abbe56e057f20f883e','小花',2,NULL,0,'2017-05-19 15:20:50','2017-07-11 17:15:53'),(31,'yuangong01','e10adc3949ba59abbe56e057f20f883e','张三',1,NULL,0,'2017-07-11 16:33:26','2017-07-11 17:16:00'),(34,'chunayuan','e10adc3949ba59abbe56e057f20f883e','李斯',0,NULL,0,'2017-07-11 16:41:36','2017-07-11 16:41:36'),(36,'caiwu','e10adc3949ba59abbe56e057f20f883e','张华',0,NULL,0,'2017-07-11 16:42:17','2017-07-11 16:42:17'),(38,'caigoujingli','e10adc3949ba59abbe56e057f20f883e','李天',0,NULL,0,'2017-07-11 16:42:56','2017-07-11 16:42:56'),(39,'zongjingli','e10adc3949ba59abbe56e057f20f883e','王化',2,NULL,0,'2017-07-11 16:43:18','2017-07-11 17:15:41');
 
 /*Table structure for table `sys_user_role` */
 
@@ -189,11 +190,11 @@ CREATE TABLE `sys_user_role` (
   `user_id` bigint(20) NOT NULL,
   `role_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8 COMMENT='用户角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COMMENT='用户角色表';
 
 /*Data for the table `sys_user_role` */
 
-insert  into `sys_user_role`(`id`,`user_id`,`role_id`) values (66,1,1),(68,3,5),(115,5,4),(117,34,6),(119,36,3),(121,38,7),(127,39,8),(128,6,4),(129,31,2);
+insert  into `sys_user_role`(`id`,`user_id`,`role_id`) values (68,3,5),(115,5,4),(117,34,6),(119,36,3),(121,38,7),(127,39,8),(128,6,4),(129,31,2),(131,1,1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
