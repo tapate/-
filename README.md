@@ -32,7 +32,7 @@ zb
 |    ├── zb-wechat-rpc-api -- rpc接口包
 |    ├── zb-wechat-rpc-service -- rpc服务提供者
 |    └── zb-wechat-server -- dubbo服务注册模块
-├── zb-oa -- 对象存储系统
+├── zb-oa -- OA办公系统
 |    ├── zb-oa-rpc-api -- rpc接口包
 |    ├── zb-oa-rpc-service -- rpc服务提供者
 |    └── zb-oa-server -- dubbo服务注册模块
@@ -248,7 +248,7 @@ maven的编译打包，我就不多说了。如果在项目编译或者打包部
 
 - 模块命名为`项目`-`子项目`-`业务`，如`zb-ucenter-web`
 
-- 更多规范，参考[[阿里巴巴Java开发手册] [http://git.oschina.net/zhoubang85/zb/attach_files](http://git.oschina.net/zhoubang85/zb/attach_files)
+- 更多规范，参考[阿里巴巴Java开发手册] http://git.oschina.net/zhoubang85/zb/attach_files
 
 ```
 
