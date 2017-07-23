@@ -14,7 +14,7 @@
         <module>zb-common</module>
         <module>zb-socket</module>
         <module>zb-oauth</module>
-        <!-- <module>zb-api</module> -->
+        <module>zb-api</module>
     </modules>
     
     <properties>

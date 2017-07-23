@@ -16,13 +16,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import pers.zb.common.util.enums.BasicConfigEnum;
-import pers.zb.common.util.util.JsonUtil;
-import pers.zb.entity.basic.BasicConfig;
+import pers.zb.common.util.enums.FromSystemEnum;
+import pers.zb.common.util.util.DateUtil;
 import pers.zb.entity.basic.BasicSourceDownload;
+import pers.zb.entity.record.VisitRecord;
 import pers.zb.entity.sys.SysMenu;
-import pers.zb.ucenter.rpc.api.basic.BasicConfigService;
 import pers.zb.ucenter.rpc.api.basic.BasicSourceDownloadService;
+import pers.zb.ucenter.rpc.api.record.VisitRecordService;
 import pers.zb.ucenter.rpc.api.sys.MenuService;
 
 @Controller
@@ -37,11 +37,11 @@ public class IndexController {
     @Autowired
     private BasicSourceDownloadService basicSourceDownloadService;
     
-    @Autowired
-    private BasicConfigService basicConfigService;
-    
     @Value("#{configProperties['service.url']}")
     private String SERVICE_URL;
+    
+    @Autowired
+    private VisitRecordService visitRecordService;
     
     /**
      * 进入首页
@@ -89,23 +89,79 @@ public class IndexController {
     /**
      * /index 请求 ， 进入首页后的默认页面 
      * @return
+     * @throws Exception 
      */
     @RequestMapping(value = "/main")
-    public String defaultPage(HttpServletRequest request,ModelMap map) {
-        String clientIp = getIpAddr(request);
-        map.put("clientIp", clientIp);
-        map.put("sourceCount", basicSourceDownloadService.getAllList().size());
-        map.put("curTime", DateFormatUtils.format(new Date(), "yyyy年MM月dd日 HH时mm分ss秒"));
+    public String defaultPage(HttpServletRequest request,ModelMap map) throws Exception {
+        String curLoginIp = getIpAddr(request);
+        map.put("serviceUrl", SERVICE_URL);
+        map.put("curLoginIp", curLoginIp);
+        
+        Subject subject = SecurityUtils.getSubject();//当前登录用户
+        String userName = String.valueOf(subject.getPrincipal());
+        
+        //获取上次登录信息
+        VisitRecord lastLogin = visitRecordService.getLastLogin(userName);
+        if(lastLogin == null){
+            map.put("lastLoginIp", curLoginIp);
+            map.put("lastLoginTime", DateUtil.getDateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        }else{
+            map.put("lastLoginIp", lastLogin.getCliIp());
+            map.put("lastLoginTime", DateUtil.getDateFormat(lastLogin.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        }
+        
+        //获取今日登录次数
+        String today = DateUtil.getDateFormat(new Date());
+        Integer todayLoginNum = visitRecordService.getCurUserDayLoginNum(userName,today);
+        if(todayLoginNum == null || todayLoginNum == 0){
+            map.put("todayLoginNum", 1);
+        }else{
+            map.put("todayLoginNum", todayLoginNum);
+        }
         
         
-        BasicConfig basicConfig = basicConfigService.getConfigByName(BasicConfigEnum.project_debugging_tip.toString());
-        if(basicConfig != null){
-            logger.debug("是否开启网站在线调试提示信息:" + JsonUtil.toJson(basicConfig));
-            map.put("projectDebuggingTip", basicConfig.getConfigValue());
+        /**
+         * 记录来访日志
+         */
+        //先判断是否是当前会话的重复请求
+        VisitRecord vr = visitRecordService.selectBySessionId(request.getSession().getId());
+        if(vr == null){
+            VisitRecord visitRecord = getClientRequestInfo(request,userName);
+            visitRecordService.save(visitRecord);
         }
         return "main";
     }
 
+    /**
+     * 获取客户端请求信息
+     * @param request
+     * @return
+     */
+    public static VisitRecord getClientRequestInfo(HttpServletRequest request,String userName){
+        String clientIp = getIpAddr(request);//获取客户端ip
+        
+        VisitRecord visitRecord =new VisitRecord();
+        visitRecord.setCliIp(clientIp);
+        visitRecord.setCliReqMethod(request.getMethod());
+        visitRecord.setCliReqUri(request.getRequestURI());
+        visitRecord.setCliReqUrl(request.getRequestURL().toString());
+        visitRecord.setCliSysAgent(request.getHeader("user-agent"));
+        visitRecord.setCliSysArch(System.getProperty("os.arch"));
+        visitRecord.setCliSysName(System.getProperty("os.name"));
+        visitRecord.setCliSysVersion(System.getProperty("os.version"));
+        
+        Date date = new Date();
+        visitRecord.setCreateTime(date);
+        visitRecord.setUpdateTime(date);
+        
+        visitRecord.setLocalAddr(request.getLocalAddr());
+        visitRecord.setLocalName(request.getLocalName());
+        visitRecord.setReqSessionId(request.getSession().getId());
+        visitRecord.setUserFromSystem(FromSystemEnum.DEFAULT_CURRENT_USER_CENTER);
+        visitRecord.setLoginUserName(userName);
+        return visitRecord;
+    }
+    
     /**
      * 获取客户端ip
      * @param request

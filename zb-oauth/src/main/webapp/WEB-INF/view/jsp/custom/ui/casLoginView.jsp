@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ include file="/WEB-INF/view/jsp/custom/ui/includes/taglibs.jsp"%>
-
+<title>CAS单点登录认证中心</title>
 <link rel="stylesheet" type="text/css" href="<c:url value="/loginnew/resources/static/h-ui/css/H-ui.min.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/loginnew/resources/Hui-iconfont/1.0.8/iconfont.min.css" />" />
 <link rel="stylesheet" type="text/css" href="<c:url value="/loginnew/resources/static/h-ui.admin/skin/default/skin.css" />" id="skin" />

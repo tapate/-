@@ -57,6 +57,9 @@
     <dubbo:service interface="pers.zb.ucenter.rpc.api.activemq.QueueMessageService" ref="queueMessageServiceImpl" timeout="30000" retries="0" />
     <dubbo:service interface="pers.zb.ucenter.rpc.api.activemq.TopicMessageService" ref="topicMessageServiceImpl" timeout="30000" retries="0" />
     
+    <!-- 日志记录相关服务 -->
+    <dubbo:service interface="pers.zb.ucenter.rpc.api.record.VisitRecordService" ref="visitRecordServiceImpl" timeout="30000" retries="0" />
+    
     <!-- activiti工作流相关服务 -->
     <dubbo:service interface="org.activiti.engine.RepositoryService" ref="repositoryService" timeout="30000" retries="0"/>
     <dubbo:service interface="org.activiti.engine.RuntimeService" ref="runtimeService" timeout="30000" retries="0"/>

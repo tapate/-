@@ -100,7 +100,11 @@
     <logger name="org.springframework.webflow">
         <level value="WARN" />
     </logger>
-
+    
+    <logger name="pers.zb.oauth">
+        <level value="DEBUG" />
+    </logger>
+    
     <logger name="org.jasig" additivity="true">
         <level value="DEBUG" />
         <appender-ref ref="cas" />

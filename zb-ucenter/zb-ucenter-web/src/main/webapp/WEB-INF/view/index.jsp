@@ -56,8 +56,9 @@
             var second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
             var timeDate = year+'-' + month+'-' + day + "&nbsp;" + hour + ':' + minute + ':' + second;
             
-            accountOfflineNotice(userName + "_" + sessionId , 
-            		"您好，当前账号【" + userName + "】 已在其他客户端登录，您的此次会话将要被迫下线，谢谢配合。<br/><br/>登录操作时间：" + timeDate);
+            //accountOfflineNotice(userName + "_" + sessionId , "您好，当前账号【" + userName + "】 已在其他客户端登录，您的此次会话将要被迫下线，谢谢配合。<br/><br/>登录操作时间：" + timeDate);
+            
+            clientLoginServiceConnect();//客户端登陆消息推送服务
         });
     </script>
     <script type="text/javascript">
@@ -84,6 +85,33 @@
             ws.onclose = function (event) {
             	//console.log("socket服务连接已关闭");
             	var pop=new Pop("消息推送服务连接已关闭", "",event.data);
+            };
+        }
+        
+        //客户端登陆消息推送服务
+        function clientLoginServiceConnect() {
+            var ws = null;
+            if ('WebSocket' in window) {
+                ws= new WebSocket("ws://" + $("#serviceUrl").val() + "/websck_notice_client_login");
+            }else if ('MozWebSocket' in window) {
+                ws = new MozWebSocket("ws://" + $("#serviceUrl").val() + "/websck_notice_client_login");
+            }else {
+                ws = new SockJS("http://" + $("#serviceUrl").val() + "/sockjs/websck_notice_client_login");
+            }
+            ws.onopen = function () {
+                console.log("新客户端登录消息推送通知已连接");
+            };
+            
+            //消息监听
+            ws.onmessage = function (event) {
+                console.log("有新客户端登录了系统:" + event.data);
+                var pop=new Pop("有新客户端登录了系统", "",event.data);
+            };
+            ws.onerror = function (evnt) {
+            };
+            ws.onclose = function (event) {
+                console.log("客户端登陆消息推送服务连接已关闭:" + event.data);
+                var pop=new Pop("客户端登陆消息推送服务连接已关闭", "",event.data);
             };
         }
     </script>

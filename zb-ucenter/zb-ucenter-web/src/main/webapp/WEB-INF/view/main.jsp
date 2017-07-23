@@ -10,12 +10,33 @@
 	
 	<%@ include file="/WEB-INF/view/common/common.jsp"%>
     
+    <script type="text/javascript">
+	    $(document).ready(function(){
+	    	clientLoginSystemNotice();
+	    });
+	    //通知所有在线用户，xx客户端登陆了系统
+	    function clientLoginSystemNotice(){
+	        $.ajax({
+	            type: "get",
+	            url: $("#clientLoginSystemNoticeUrl").val(),
+	            dataType: "json",
+	            async:false,
+	            timeout:10000,
+	            success: function (result) {
+	                if(result.code == 200){
+	                    //推送消息成功
+	                }
+	            }
+	        });
+	    }
+    </script>
 </head>
 <body>
 	<div class="page-container">
 	    <p class="f-20 text-success">欢迎访问  [ 用户管理中心系统 <span class="f-14">1.0</span> ]</p>
-	    <p>今日登录次数：18 </p>
-	    <p>上次登录IP：222.35.131.79.1  上次登录时间：2014-6-14 11:19:55</p>
+	    <p>今日登录次数：${todayLoginNum} </p>
+	    <p>本次登录IP：${curLoginIp}  上次登录IP：${lastLoginIp}  上次登录时间：${lastLoginTime}</p>
+	    <!-- 
 	    <table class="table table-border table-bordered table-bg">
 	        <thead>
 	            <tr>
@@ -174,14 +195,18 @@
 	            </tr>
 	        </tbody>
 	    </table>
+	     -->
 	</div>
 	<footer class="footer mt-20">
 	    <div class="container">
+	       <!-- 
 	        <p>感谢jQuery、layer、laypage、Validform、UEditor、My97DatePicker、iconfont、Datatables、WebUploaded、icheck、highcharts、bootstrap-Switch<br>
 	            Copyright &copy;2015-2017 H-ui.admin 3.0 All Rights Reserved.<br>
 	            本后台系统由<a href="http://www.h-ui.net/" target="_blank" title="H-ui前端框架">H-ui前端框架</a>提供前端技术支持</p>
+	             -->
 	    </div>
 	</footer>
 	
+	<input type="hidden" id="clientLoginSystemNoticeUrl" value="${ctx}/socket/clientLoginSystemNoticeNotice" des="通知所有在线用户，xx客户端登陆了系统"/>
 </body>
 </html>
