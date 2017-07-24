@@ -422,10 +422,24 @@ public class LeaveApplyServiceImpl implements LeaveApplyService {
             /** 获取请假相关数据 */
             String processInstanceId = task.getProcessInstanceId();//流程实例ID
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+            if(processInstance == null){
+                continue;
+            }
+            
             String businessKey = processInstance.getBusinessKey();//业务key，对应的请假记录ID
+            if(businessKey == null){
+                continue;
+            }
+            
             LeaveApply leaveApply = leaveApplyMapper.selectByPrimaryKey(Long.parseLong(businessKey));//根据ID获取请假记录
+            if(leaveApply == null){
+                continue;
+            }
             
             SysUser user = userMapper.selectByPrimaryKey(leaveApply.getUserId());//获取请假人信息
+            if(user == null){
+                continue;
+            }
             
             HrAuditVo vo = new HrAuditVo();
             vo.setCreateTime(leaveApply.getCreateTime());
