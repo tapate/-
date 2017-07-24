@@ -171,7 +171,7 @@
 	                <input type="password" placeholder="请输入登录密码" name="password" id="password" tabindex="2" path="password" placeholder="${passwordHolder }" accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off"/>
 	            </section>
 	            <section class="row cap">
-	                <input type="text" class="icon-user" name="captcha" style="width:50%;padding-left: 10px;" placeholder="请输入验证码"/>
+	                <input type="text" class="icon-user" name="captcha" style="width:50%;padding-left: 10px;" tabindex="3" placeholder="请输入验证码"/>
 	                <img src="captcha.jpg" style="vertical-align:middle;height:38px;line-height: 38px;cursor: pointer;width: 32%;margin-left: 15px;border-radius:3px;" title="点击更换验证码" onclick="this.src='captcha.jpg?'+Math.random();"/>
 	            </section>
 	            <input id="rememberMe" name="rememberMe" value="false" type="checkbox" style="display: none;"/>
