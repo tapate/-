@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wx-executor>
-  <text-message>pers.zb.web.wechat.msg.TextMessageExecutor</text-message>
-  <image-message>pers.zb.web.wechat.msg.ImageMessageExecutor</image-message>
-  <voice-message>pers.zb.web.wechat.msg.VoiceMessageExecutor</voice-message>
-  <video-message>pers.zb.web.wechat.msg.VideoMessageExecutor</video-message>
-  <location-message>pers.zb.web.wechat.msg.LocationMessageExecutor</location-message>
-  <link-message>pers.zb.web.wechat.msg.LinkMessageExecutor</link-message>
+  <text-message>pers.zb.ucenter.web.wechat.msg.TextMessageExecutor</text-message>
+  <image-message>pers.zb.ucenter.web.wechat.msg.ImageMessageExecutor</image-message>
+  <voice-message>pers.zb.ucenter.web.wechat.msg.VoiceMessageExecutor</voice-message>
+  <video-message>pers.zb.ucenter.web.wechat.msg.VideoMessageExecutor</video-message>
+  <location-message>pers.zb.ucenter.web.wechat.msg.LocationMessageExecutor</location-message>
+  <link-message>pers.zb.ucenter.web.wechat.msg.LinkMessageExecutor</link-message>
   
-  <subscribe-event>pers.zb.web.wechat.event.SubscribeEventExecutor</subscribe-event>
-  <unsubscribe-event>pers.zb.web.wechat.event.UnSubscribeEventExecutor</unsubscribe-event>
-  <scan-event>pers.zb.web.wechat.event.ScanEventExecutor</scan-event>
-  <location-event>pers.zb.web.wechat.event.LocationEventExecutor</location-event>
-  <click-event>pers.zb.web.wechat.event.MenuClickEventExecutor</click-event>
-  <view-event>pers.zb.web.wechat.event.MenuViewEventExecutor</view-event>
+  <subscribe-event>pers.zb.ucenter.web.wechat.event.SubscribeEventExecutor</subscribe-event>
+  <unsubscribe-event>pers.zb.ucenter.web.wechat.event.UnSubscribeEventExecutor</unsubscribe-event>
+  <scan-event>pers.zb.ucenter.web.wechat.event.ScanEventExecutor</scan-event>
+  <location-event>pers.zb.ucenter.web.wechat.event.LocationEventExecutor</location-event>
+  <click-event>pers.zb.ucenter.web.wechat.event.MenuClickEventExecutor</click-event>
+  <view-event>pers.zb.ucenter.web.wechat.event.MenuViewEventExecutor</view-event>
 </wx-executor>

@@ -1,4 +1,4 @@
-package pers.zb.ucenter.server.activemq;
+package pers.zb.activemq;
 
 import java.text.MessageFormat;
 
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import pers.zb.common.util.activemq.PersonInfo;
 import pers.zb.common.util.activemq.order.OrderSync;
 import pers.zb.entity.order.OrderInfo;
-import pers.zb.entity.sys.SysUser;
 
 /**
  * 消息转换器
@@ -57,10 +56,6 @@ public class ActiveMQMessageConverter implements MessageConverter {
         }else if(obj instanceof OrderSync){
             ActiveMQObjectMessage msg = (ActiveMQObjectMessage) session.createObjectMessage();
             msg.setObject((OrderSync) obj);
-            return msg;
-        }else if(obj instanceof SysUser){
-            ActiveMQObjectMessage msg = (ActiveMQObjectMessage) session.createObjectMessage();
-            msg.setObject((SysUser) obj);
             return msg;
         } else {//这里可以指定其他的消息类型
             throw new JMSException("Object:[" + obj + "] is not a instance.");

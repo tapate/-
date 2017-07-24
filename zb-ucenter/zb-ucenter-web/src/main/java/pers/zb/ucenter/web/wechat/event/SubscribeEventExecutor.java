@@ -49,7 +49,7 @@ public class SubscribeEventExecutor implements IWXEventExecutor{
         SysUser user = new SysUser();
         user.setOpenId(fromUserName);
         
-        QueueMessageService queueMessageService = (QueueMessageService)SpringBeanUtil.getApplicationContext().getBean("queueMessageServiceImpl");
+        QueueMessageService queueMessageService = (QueueMessageService)SpringBeanUtil.getApplicationContext().getBean("queueMessageService");
         queueMessageService.sendWechatSubscribeQueueMessage(user);
         
         //返回欢迎文本消息

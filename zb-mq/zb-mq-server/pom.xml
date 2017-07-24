@@ -1,26 +1,40 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>pers.zb</groupId>
-    <artifactId>zb-mq</artifactId>
-    <version>1.0.0</version>
-  </parent>
-  <groupId>pers.zb.mq.server</groupId>
-  <artifactId>zb-mq-server</artifactId>
-  <version>1.0.0</version>
-  <name>zb-mq-server</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+        <groupId>pers.zb</groupId>
+        <artifactId>zb-mq</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+	<groupId>pers.zb.mq.server</groupId>
+	<artifactId>zb-mq-server</artifactId>
+	<name>zb-mq-server</name>
+    <packaging>war</packaging>
+    
+	<dependencies>
+		<dependency>
+			<groupId>pers.zb.common.util</groupId>
+			<artifactId>zb-util</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+            <groupId>pers.zb.common.conf</groupId>
+            <artifactId>zb-conf</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+		<dependency>
+			<groupId>pers.zb.ucenter.dao</groupId>
+			<artifactId>zb-ucenter-dao</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+            <groupId>pers.zb.wechat.rpc.api</groupId>
+            <artifactId>zb-wechat-rpc-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+	</dependencies>
+	
 </project>

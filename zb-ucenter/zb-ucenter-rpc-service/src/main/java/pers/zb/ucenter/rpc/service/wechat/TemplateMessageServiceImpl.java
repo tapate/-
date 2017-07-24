@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -35,21 +36,25 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     /**
      * ptp消息生产者。
      */
-    //@Autowired
+    @Autowired
     private QueueMessageService queueMessageService;
     
     @Override
     public void sendMessage(String openId,OrderInfo orderInfo, AjaxResult<String> result) throws Exception {
+        logger.debug("订单同步信息，openId：" + openId);
+        logger.debug("订单同步信息，orderInfo：" + orderInfo);
+        logger.debug("订单同步信息，result：" + result);
+        logger.debug("订单同步信息，queueMessageService：" + queueMessageService);
         if (StringUtils.isBlank(openId)) {
             result.setCode(10001);
             result.setMsg("openId为空");
             return;
         }
-
+        
         OrderSync orderSync = new OrderSync();
         orderSync.setOpenId(openId);
         orderSync.setOrderInfoJson(JsonUtil.toJson(orderInfo));
-        
+        logger.debug("订单同步信息，orderSync：" + orderSync);
         //发送模板消息
         queueMessageService.sendOrderSyncTemplateMessage(orderSync);
     }
