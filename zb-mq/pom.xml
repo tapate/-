@@ -9,8 +9,6 @@
     <artifactId>zb-mq</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>zb-mq-rpc-api</module>
-        <module>zb-mq-rpc-service</module>
         <module>zb-mq-server</module>
     </modules>
 </project>
