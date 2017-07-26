@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!-- JMS点对点消息发送 的配置 -->
+    
+    
+     
+    <!-- ========================================================订单同步 start==============================================================  -->
+    <!-- 订单同步：点对点消息目的地 -->
+    <bean id="orderSyncQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 名称可以随意命名 -->
+        <constructor-arg value="order.sync.queue" />
+    </bean>
+    
+    <!-- 订单同步：消息消费者 ， 实现了MessageListener接口 -->
+    <bean id="orderSyncMessageReceiver" class="pers.zb.activemq.queue.order.OrderSyncQueueConsumer"></bean>
+    
+    
+    <!-- 订单同步：消息监听容器  -->
+    <bean id="orderSyncListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="orderSyncQueueDestination" />
+        <!-- 指定消息消费者 -->
+        <property name="messageListener" ref="orderSyncMessageReceiver" />
+    </bean>
+    <!-- ========================================================订单同步 end==============================================================  -->
+    
+    
+    
+    
+    
+    
+    <!-- ====================================微信关注事件，发送用户的openid微信消息：点对点消息目的地 start=============================================  -->
+    <!-- 订单同步：点对点消息目的地 -->
+    <bean id="wechatSubscribeQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 名称可以随意命名 -->
+        <constructor-arg value="wechat.subscribe.openid.msg.queue" />
+    </bean>
+    
+    <!-- 微信关注事件：消息消费者 ， 实现了MessageListener接口 -->
+    <bean id="wechatSubscribeMessageReceiver" class="pers.zb.activemq.queue.wechat.WechatSubscribeQueueConsumer"></bean>
+    
+    
+    <!-- 订单同步：消息监听容器  -->
+    <bean id="wechatSubscribeListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="wechatSubscribeQueueDestination" />
+        <!-- 指定消息消费者 -->
+        <property name="messageListener" ref="wechatSubscribeMessageReceiver" />
+    </bean>
+    <!-- ====================================微信关注事件，发送用户的openid微信消息：点对点消息目的地 end=============================================  -->
+    
+    
+    <!-- ====================================订单同步：微信模板消息通知目的地 start=============================================  -->
+    <!-- 订单同步：微信模板消息通知目的地 -->
+    <bean id="orderSyncWechatTemplateMessageQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 名称可以随意命名 -->
+        <constructor-arg value="order.sync.wechat.template.message.queue" />
+    </bean>
+    
+    <!-- 订单同步：微信模板消息消费者 ， 实现了MessageListener接口 -->
+    <bean id="orderSyncWechatTemplateMessageReceiver" class="pers.zb.activemq.queue.wechat.OrderSyncWechatTemplateMessageQueueConsumer"></bean>
+    
+    
+    <!-- 订单同步：微信模板消息监听容器  -->
+    <bean id="orderSyncWechatTemplateMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="orderSyncWechatTemplateMessageQueueDestination" />
+        <!-- 指定消息消费者 -->
+        <property name="messageListener" ref="orderSyncWechatTemplateMessageReceiver" />
+    </bean>
+    <!-- ====================================订单同步：微信模板消息通知目的地 end=============================================  -->
+    
+    
+</beans>
